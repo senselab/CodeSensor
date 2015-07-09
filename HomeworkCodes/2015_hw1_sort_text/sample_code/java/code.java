@@ -1,0 +1,42 @@
+import java.io.*;
+import java.util.*;
+
+/**
+ * Created by Hank on 2015/1/4.
+ */
+public class code {
+    public static void main(String[] args) throws FileNotFoundException, IOException {
+
+
+        BufferedReader br = new BufferedReader(new FileReader("input.txt"));
+        PrintWriter output = new PrintWriter("output.txt", "UTF-8");
+
+        //StringBuilder sb = new StringBuilder();
+        String line = br.readLine();
+        int k,m;
+        int cntTestData = Integer.parseInt(line.split("\\s+")[0]);
+
+        System.out.printf("There are %d cases\n", cntTestData);
+
+        for ( k = 0; k < cntTestData; k++) {
+            line = br.readLine();
+            String[] elements = line.split("\\s+");
+            int[] numbers = new int[elements.length];
+            for ( m = 0; m < elements.length; m++)
+                numbers[m] = Integer.parseInt(elements[m]);
+            Arrays.sort(numbers);
+
+            for ( m = 0; m < numbers.length; m++) {
+                //output.printf("%d ", numbers[m]);
+                output.print(numbers[m]);
+                output.print(" ");
+            }
+
+            //output.printf("\n");
+            output.print("\n");
+        }
+
+        output.close();
+
+    }
+}

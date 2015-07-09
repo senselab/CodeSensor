@@ -1,0 +1,47 @@
+(ns homework.core
+  (:gen-class))
+
+
+(import '[java.io FileInputStream FileOutputStream])
+
+
+(defn SortData [infile outfile]
+  (def in (FileInputStream. infile))
+  (def out (FileOutputStream. outfile))
+  (def packer (org.msgpack.core.MessagePack/newDefaultPacker out))
+  (def unpacker (org.msgpack.core.MessagePack/newDefaultUnpacker in))
+  (def cntTestCases (.unpackInt unpacker))
+  (println (format "There are %d cases" cntTestCases))
+  
+  (dotimes [i cntTestCases]
+    (def len (.unpackArrayHeader unpacker))
+    
+    
+    (def numbers 
+      (loop [k len _numbers []]
+        (if (zero? k)
+          _numbers
+          (recur (dec k) (conj _numbers (.unpackInt unpacker)) )
+        )
+      )
+    )
+
+    (def numbers_sorted (sort numbers))
+
+
+    (.packArrayHeader packer (count numbers_sorted))
+    (doseq [v numbers_sorted] (.packInt packer v))
+
+    (println (format "%d: len = %d " i (count numbers_sorted)))    
+  )
+
+  (.close packer)
+  (.close in)
+  (.close out)
+)
+
+
+(defn -main
+  "xxx"
+  [& args]
+  (SortData "input.txt" "output.txt"))

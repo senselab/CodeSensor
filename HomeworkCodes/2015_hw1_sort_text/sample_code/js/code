@@ -1,0 +1,28 @@
+var lazy    = require("lazy");
+var fs  = require("fs");
+var cnt = -1;
+var output = fs.createWriteStream('./output.txt');
+
+new lazy(fs.createReadStream('./input.txt'))
+    .lines
+    .forEach(function(line){
+
+    	var data = line.toString().split(/\s+/);
+
+    	if (cnt == -1)
+    		cnt = data[0];
+    	else if (data.length>0 && cnt>0) {
+    		cnt--;
+            
+
+            var numbers = data;
+            
+	    	numbers.sort(function(a,b){return a-b});
+
+	    	numbers.forEach(function(element){
+	    		output.write(element + ' ');
+	    	});
+	        output.write('\n');
+	    }    
+    }
+);

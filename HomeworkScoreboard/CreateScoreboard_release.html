@@ -1,0 +1,261 @@
+<!-- HTML generated using hilite.me --><div style="background: #ffffff; overflow:auto;width:auto;color:black;background:white;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><table><tr><td><pre style="margin: 0; line-height: 125%">  1
+  2
+  3
+  4
+  5
+  6
+  7
+  8
+  9
+ 10
+ 11
+ 12
+ 13
+ 14
+ 15
+ 16
+ 17
+ 18
+ 19
+ 20
+ 21
+ 22
+ 23
+ 24
+ 25
+ 26
+ 27
+ 28
+ 29
+ 30
+ 31
+ 32
+ 33
+ 34
+ 35
+ 36
+ 37
+ 38
+ 39
+ 40
+ 41
+ 42
+ 43
+ 44
+ 45
+ 46
+ 47
+ 48
+ 49
+ 50
+ 51
+ 52
+ 53
+ 54
+ 55
+ 56
+ 57
+ 58
+ 59
+ 60
+ 61
+ 62
+ 63
+ 64
+ 65
+ 66
+ 67
+ 68
+ 69
+ 70
+ 71
+ 72
+ 73
+ 74
+ 75
+ 76
+ 77
+ 78
+ 79
+ 80
+ 81
+ 82
+ 83
+ 84
+ 85
+ 86
+ 87
+ 88
+ 89
+ 90
+ 91
+ 92
+ 93
+ 94
+ 95
+ 96
+ 97
+ 98
+ 99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="color: #4c8317">&lt;?php</span>
+
+<span style="color: #0000aa">function</span> <span style="color: #00aa00">calculate_score</span>()
+{
+	<span style="color: #0000aa">global</span> <span style="color: #aa0000">$score_board</span>;
+	<span style="color: #0000aa">global</span> <span style="color: #aa0000">$TOTAL_P_SCORE</span>;
+	<span style="color: #0000aa">global</span> <span style="color: #aa0000">$score_P_ratio</span>;
+	<span style="color: #0000aa">global</span> <span style="color: #aa0000">$REMAINING_P_SCORE</span>;
+	
+	<span style="color: #aa0000">$qCur</span> = <span style="color: #0000aa">new</span> ScorePriorityQueue();
+	<span style="color: #aa0000">$qExpire</span> = <span style="color: #0000aa">new</span> ScorePriorityQueue();
+
+	<span style="color: #aa0000">$total_p_score</span> = <span style="color: #aa0000">$TOTAL_P_SCORE</span>;
+	<span style="color: #aa0000">$multiplier</span> = -<span style="color: #009999">1</span>;
+	
+	
+	<span style="color: #aa0000">$qCur</span>-&gt;<span style="color: #1e90ff">setExtractFlags</span>(ScorePriorityQueue::<span style="color: #1e90ff">EXTR_DATA</span>);
+	<span style="color: #aa0000">$qExpire</span>-&gt;<span style="color: #1e90ff">setExtractFlags</span>(ScorePriorityQueue::<span style="color: #1e90ff">EXTR_DATA</span>);
+	
+	<span style="color: #0000aa">foreach</span>(<span style="color: #aa0000">$score_board</span> <span style="color: #0000aa">as</span> <span style="color: #aa0000">$k</span>=&gt;<span style="color: #aa0000">$r</span>) {
+	
+		
+		<span style="color: #aaaaaa; font-style: italic">///// f_score</span>
+		<span style="color: #0000aa">if</span> (IsValidScoreboardEntry(<span style="color: #aa0000">$k</span>)) {
+	
+			<span style="color: #aaaaaa; font-style: italic">//var_dump($score_board[$k]);</span>
+					
+			<span style="color: #aa0000">$score_board</span>[<span style="color: #aa0000">$k</span>][<span style="color: #aa5500">&quot;func&quot;</span>] = <span style="color: #aa0000">$score_board</span>[<span style="color: #aa0000">$k</span>][<span style="color: #aa5500">&quot;check&quot;</span>]*<span style="color: #00aaaa">pow</span>(<span style="color: #009999">0.9</span>,<span style="color: #aa0000">$score_board</span>[<span style="color: #aa0000">$k</span>][<span style="color: #aa5500">&quot;m_error&quot;</span>]);
+						
+			<span style="color: #0000aa">if</span> ( <span style="color: #aa0000">$score_board</span>[<span style="color: #aa0000">$k</span>][<span style="color: #aa5500">&quot;m_heap&quot;</span>] &gt;<span style="color: #009999">0</span>) {
+				<span style="color: #aa0000">$score_board</span>[<span style="color: #aa0000">$k</span>][<span style="color: #aa5500">&quot;func&quot;</span>] *= (<span style="color: #aa0000">$score_board</span>[<span style="color: #aa0000">$k</span>][<span style="color: #aa5500">&quot;m_heap&quot;</span>] -<span style="color: #aa0000">$score_board</span>[<span style="color: #aa0000">$k</span>][<span style="color: #aa5500">&quot;heap_lost&quot;</span>]) / (<span style="color: #aa0000">$score_board</span>[<span style="color: #aa0000">$k</span>][<span style="color: #aa5500">&quot;m_heap&quot;</span>]);
+			}
+
+			<span style="color: #0000aa">if</span> ( <span style="color: #aa0000">$r</span>[<span style="color: #aa5500">&quot;priority&quot;</span>]&gt;<span style="color: #009999">0</span>)
+				<span style="color: #aa0000">$qCur</span>-&gt;<span style="color: #1e90ff">insert</span>(<span style="color: #aa0000">$k</span>, <span style="color: #aa0000">$r</span>[<span style="color: #aa5500">&quot;priority&quot;</span>]);
+		}
+		<span style="color: #0000aa">else</span> {
+			<span style="color: #aa0000">$score_board</span>[<span style="color: #aa0000">$k</span>][<span style="color: #aa5500">&quot;func&quot;</span>] = <span style="color: #009999">0</span>;
+		}
+		
+		<span style="color: #aaaaaa; font-style: italic">////// init p_score</span>
+		<span style="color: #aa0000">$score_board</span>[<span style="color: #aa0000">$k</span>][<span style="color: #aa5500">&quot;p_score&quot;</span>] = <span style="color: #009999">0</span>;
+		
+		<span style="color: #0000aa">if</span> ( <span style="color: #aa0000">$multiplier</span>==-<span style="color: #009999">1</span> || <span style="color: #aa0000">$score_board</span>[<span style="color: #aa0000">$k</span>][<span style="color: #aa5500">&quot;priority&quot;</span>]  &gt; <span style="color: #aa0000">$multiplier</span>) {
+			<span style="color: #aa0000">$multiplier</span> = <span style="color: #aa0000">$score_board</span>[<span style="color: #aa0000">$k</span>][<span style="color: #aa5500">&quot;priority&quot;</span>];
+		}
+	}
+
+	<span style="color: #0000aa">if</span> (<span style="color: #aa0000">$multiplier</span> &lt;=<span style="color: #009999">0</span> )
+		<span style="color: #aa0000">$multiplier</span> = <span style="color: #009999">1</span>;
+
+	
+	<span style="color: #0000aa">while</span> (<span style="color: #aa0000">$qCur</span>-&gt;<span style="color: #1e90ff">valid</span>() &amp;&amp; <span style="color: #aa0000">$total_p_score</span> &gt;<span style="color: #009999">0</span>) {
+
+		<span style="color: #aa0000">$bufExpire</span> = <span style="color: #0000aa">array</span>();
+
+<span style="color: #aaaaaa; font-style: italic">//		printf(&quot;multiplier &quot;. $multiplier.&quot;\n&quot;);</span>
+
+		<span style="color: #aa0000">$next_multiplier</span> = -<span style="color: #009999">1</span>; 
+
+		<span style="color: #0000aa">while</span>(<span style="color: #aa0000">$qCur</span>-&gt;<span style="color: #1e90ff">valid</span>() ) {
+			<span style="color: #aa0000">$idx</span> = <span style="color: #aa0000">$qCur</span>-&gt;<span style="color: #1e90ff">extract</span>();
+
+			<span style="color: #0000aa">if</span> ( <span style="color: #aa0000">$next_multiplier</span> == -<span style="color: #009999">1</span> ) {
+				<span style="color: #aa0000">$next_multiplier</span> = -<span style="color: #009999">2</span>;	
+			}
+			<span style="color: #0000aa">else</span> <span style="color: #0000aa">if</span> ( <span style="color: #aa0000">$next_multiplier</span> == -<span style="color: #009999">2</span>) {
+				<span style="color: #aa0000">$next_multiplier</span> = <span style="color: #aa0000">$score_board</span>[<span style="color: #aa0000">$idx</span>][<span style="color: #aa5500">&quot;priority&quot;</span>];
+<span style="color: #aaaaaa; font-style: italic">//				printf(&quot;next multiplier &quot; . $next_multiplier.&quot;\n&quot;);</span>
+			}
+	
+<span style="color: #aaaaaa; font-style: italic">//			printf(&quot;  priority &quot;.  $score_board[$idx][&quot;priority&quot;].&quot;\n&quot;);</span>
+	
+			<span style="color: #aa0000">$s</span> = <span style="color: #aa0000">$score_board</span>[<span style="color: #aa0000">$idx</span>][<span style="color: #aa5500">&quot;priority&quot;</span>]/<span style="color: #aa0000">$multiplier</span>;	<span style="color: #aaaaaa; font-style: italic">// alloted score in the scheduling cycle</span>
+
+			<span style="color: #0000aa">if</span> ( <span style="color: #aa0000">$s</span> &lt; <span style="color: #009999">0.00001</span>) {
+				<span style="color: #aa0000">$s</span> = <span style="color: #009999">0.00001</span>;
+			}			
+
+			<span style="color: #0000aa">if</span> ( <span style="color: #aa0000">$s</span> &gt; <span style="color: #009999">100</span> - <span style="color: #aa0000">$score_board</span>[<span style="color: #aa0000">$idx</span>][<span style="color: #aa5500">&quot;p_score&quot;</span>])
+				<span style="color: #aa0000">$s</span> =  <span style="color: #009999">100</span> - <span style="color: #aa0000">$score_board</span>[<span style="color: #aa0000">$idx</span>][<span style="color: #aa5500">&quot;p_score&quot;</span>];
+				
+			<span style="color: #aa0000">$score_board</span>[<span style="color: #aa0000">$idx</span>][<span style="color: #aa5500">&quot;p_score&quot;</span>] += <span style="color: #aa0000">$s</span>;
+			<span style="color: #aa0000">$total_p_score</span> -= <span style="color: #aa0000">$s</span>;
+					
+			<span style="color: #0000aa">if</span> (<span style="color: #aa0000">$score_board</span>[<span style="color: #aa0000">$idx</span>][<span style="color: #aa5500">&quot;p_score&quot;</span>] &lt; <span style="color: #009999">100</span> &amp;&amp; <span style="color: #aa0000">$score_board</span>[<span style="color: #aa0000">$idx</span>][<span style="color: #aa5500">&quot;priority&quot;</span>]&gt;<span style="color: #009999">0</span>) {
+				<span style="color: #aa0000">$bufExpire</span>[<span style="color: #aa0000">$idx</span>] = <span style="color: #aa0000">$score_board</span>[<span style="color: #aa0000">$idx</span>][<span style="color: #aa5500">&quot;priority&quot;</span>];
+			}
+
+		}
+
+		{
+			<span style="color: #aa0000">$bufExpire</span> = shuffle_assoc(<span style="color: #aa0000">$bufExpire</span>);
+			<span style="color: #0000aa">foreach</span> (<span style="color: #aa0000">$bufExpire</span> <span style="color: #0000aa">as</span> <span style="color: #aa0000">$idx</span> =&gt; <span style="color: #aa0000">$priority</span>) {
+				<span style="color: #aa0000">$qExpire</span>-&gt;<span style="color: #1e90ff">insert</span>(<span style="color: #aa0000">$idx</span>, <span style="color: #aa0000">$score_board</span>[<span style="color: #aa0000">$idx</span>][<span style="color: #aa5500">&quot;priority&quot;</span>]);
+			}		
+		}
+
+		<span style="color: #aa0000">$qCur</span> = <span style="color: #aa0000">$qExpire</span>;
+		<span style="color: #aa0000">$qExpire</span> = <span style="color: #0000aa">new</span> ScorePriorityQueue();
+		<span style="color: #aa0000">$qExpire</span>-&gt;<span style="color: #1e90ff">setExtractFlags</span>(ScorePriorityQueue::<span style="color: #1e90ff">EXTR_DATA</span>);
+
+		<span style="color: #aa0000">$multiplier</span> = <span style="color: #aa0000">$next_multiplier</span>;
+		<span style="color: #0000aa">if</span> ( <span style="color: #aa0000">$multiplier</span> &lt;= <span style="color: #009999">0</span> 	)
+			<span style="color: #aa0000">$multiplier</span> = <span style="color: #009999">1</span>;
+	}
+	
+	<span style="color: #0000aa">foreach</span>(<span style="color: #aa0000">$score_board</span> <span style="color: #0000aa">as</span> <span style="color: #aa0000">$k</span>=&gt;<span style="color: #aa0000">$r</span>) {
+		<span style="color: #aa0000">$score_board</span>[<span style="color: #aa0000">$k</span>][<span style="color: #aa5500">&quot;score&quot;</span>] = <span style="color: #009999">100</span>*<span style="color: #aa0000">$score_board</span>[<span style="color: #aa0000">$k</span>][<span style="color: #aa5500">&quot;func&quot;</span>]*((<span style="color: #009999">1</span>-<span style="color: #aa0000">$score_P_ratio</span>) + <span style="color: #aa0000">$score_board</span>[<span style="color: #aa0000">$k</span>][<span style="color: #aa5500">&quot;p_score&quot;</span>]*<span style="color: #aa0000">$score_P_ratio</span>/<span style="color: #009999">100</span>);
+		
+		<span style="color: #aaaaaa; font-style: italic">/// submission time /////</span>
+		<span style="color: #aa0000">$score_board</span>[<span style="color: #aa0000">$k</span>][<span style="color: #aa5500">&quot;submission_time&quot;</span>] = <span style="color: #00aaaa">date</span> (<span style="color: #aa5500">&quot;n/j H:i:s&quot;</span>, GetSubmissionTime(<span style="color: #aa0000">$score_board</span>[<span style="color: #aa0000">$k</span>][<span style="color: #aa5500">&quot;id&quot;</span>]) );
+		<span style="color: #aaaaaa; font-style: italic">////////////////////////</span>
+	}
+
+
+	<span style="color: #aa0000">$REMAINING_P_SCORE</span> = <span style="color: #aa0000">$total_p_score</span>;	
+	<span style="color: #aaaaaa; font-style: italic">////////sort by score</span>
+	
+	<span style="color: #aa0000">$tmp</span> = <span style="color: #0000aa">Array</span>();
+	
+	<span style="color: #0000aa">foreach</span>(<span style="color: #aa0000">$score_board</span> <span style="color: #0000aa">as</span> &amp;<span style="color: #aa0000">$ma</span>)
+		<span style="color: #aa0000">$tmp</span>[] = <span style="color: #aa0000">$ma</span>[<span style="color: #aa5500">&quot;score&quot;</span>] + <span style="color: #aa0000">$ma</span>[<span style="color: #aa5500">&quot;priority&quot;</span>]/<span style="color: #009999">1000</span>;
+	    	
+	<span style="color: #00aaaa">array_multisort</span>(<span style="color: #aa0000">$tmp</span>,SORT_DESC, <span style="color: #aa0000">$score_board</span> ); 	
+}
+
+
+
+<span style="color: #4c8317">?&gt;</span>
+</pre></td></tr></table></div>
+

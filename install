@@ -1,0 +1,134 @@
+#!/bin/bash
+
+#yum install p7zip
+
+
+#HW_NAME="2015_hw1_sort_text"
+#HW_NAME="2015_hw2_sort_binary"
+#HW_NAME="2015_hw3_num_inversions"
+#HW_NAME="2015_hw4_distinct_patterns"
+#HW_NAME="2015_hw5_range_minimum_query"
+#HW_NAME="2015_hw6_shooter"
+#HW_NAME="2015_hw7_tower_of_hanoi"
+HW_NAME="2015_hw8_exam_papers"
+#HW_NAME="2015_hw9_tower_of_hanoi_big"
+
+HW_NUM=$(HomeworkInspector/get_setting_value.py HomeworkCodes/$HW_NAME/homework_inspector_config HW_NUM)
+HW_TITLE=$(HomeworkInspector/get_setting_value.py HomeworkCodes/$HW_NAME/homework_inspector_config HW_TITLE)
+
+echo 'HW_NUM = '$HW_NUM
+echo 'HW_TITLE = '$HW_TITLE
+
+if [[ "$HW_NUM" = "NOT_FOUND" || "$HW_TITLE" = "NOT_FOUND" ]]; then
+	echo 'error !'
+	exit 0
+fi
+
+
+
+
+#VALGRIND_PATH=/usr/bin
+VALGRIND_PATH=/usr/local/valgrind_coc/bin
+
+function replace_tag() {
+    awk -vHW_NAME="$HW_NAME" '{gsub("<!CODESENSOR_HW_NAME!>",HW_NAME);print $0}' $1 > $1.tmp.replacetag
+    mv -f $1.tmp.replacetag $1
+
+    awk -vHW_NUM="$HW_NUM" '{gsub("<!CODESENSOR_HW_NUM!>",HW_NUM);print $0}' $1 > $1.tmp.replacetag
+    mv -f $1.tmp.replacetag $1
+
+    awk -vHW_TITLE="$HW_TITLE" '{gsub("<!CODESENSOR_HW_TITLE!>",HW_TITLE);print $0}' $1 > $1.tmp.replacetag
+    mv -f $1.tmp.replacetag $1
+
+}
+
+
+
+cp $VALGRIND_PATH/valgrind $VALGRIND_PATH/valgrind.safe
+chcon -t homework_exec_t $VALGRIND_PATH/valgrind.safe
+
+mkdir /usr/bin/HomeworkInspector
+
+cp -f tools/valgrind_zombie_hunter.py /usr/bin/HomeworkInspector/
+
+
+rm -rf /usr/bin/HomeworkInspector/$HW_NAME
+mkdir /usr/bin/HomeworkInspector/$HW_NAME
+
+cp -f HomeworkInspector/build_script_phase0 /usr/bin/HomeworkInspector/$HW_NAME
+cp -f HomeworkInspector/build_script_phase1 /usr/bin/HomeworkInspector/$HW_NAME
+cp -f HomeworkInspector/init_script /usr/bin/HomeworkInspector/$HW_NAME
+cp -f HomeworkInspector/reliable_wrapper.py /usr/bin/HomeworkInspector/$HW_NAME
+cp -f HomeworkInspector/progress_log.py /usr/bin/HomeworkInspector/$HW_NAME
+cp -f HomeworkInspector/callgrind_annotate_filter.py /usr/bin/HomeworkInspector/$HW_NAME
+cp -f HomeworkInspector/reliable_wrapper.py /usr/bin/HomeworkInspector/$HW_NAME
+cp -f HomeworkInspector/if_setting_has.py /usr/bin/HomeworkInspector/$HW_NAME
+cp -f HomeworkInspector/get_setting_value.py /usr/bin/HomeworkInspector/$HW_NAME
+cp -p HomeworkInspector/purge_old_submissions.py /usr/bin/HomeworkInspector/$HW_NAME
+cp -p HomeworkInspector/valgrind.memcheck.supp /usr/bin/HomeworkInspector/$HW_NAME
+touch /usr/bin/HomeworkInspector/$HW_NAME/code_blank.h
+
+cd	HomeworkInspector/src/
+make all
+cd ../../
+cp -f HomeworkInspector/src/HomeworkInspector  /usr/bin/HomeworkInspector/$HW_NAME
+cp -f HomeworkInspector/src/test_target /usr/bin/HomeworkInspector/$HW_NAME
+
+mkdir /usr/bin/HomeworkInspector/$HW_NAME/skeleton_code
+cp -f HomeworkCodes/$HW_NAME/skeleton/* /usr/bin/HomeworkInspector/$HW_NAME/skeleton_code/
+
+
+
+chmod 700 /usr/bin/HomeworkInspector/$HW_NAME/*
+chmod 700 /usr/bin/HomeworkInspector/$HW_NAME/skeleton_code/*
+chmod 755 /usr/bin/HomeworkInspector/$HW_NAME/HomeworkInspector
+chcon -t homework_inspector_exec_t /usr/bin/HomeworkInspector/$HW_NAME/HomeworkInspector
+chmod u+s /usr/bin/HomeworkInspector/$HW_NAME/HomeworkInspector
+
+
+
+cp -f HomeworkScoreboard/CreateScoreboard.php /usr/bin/HomeworkInspector/$HW_NAME/
+replace_tag /usr/bin/HomeworkInspector/$HW_NAME/CreateScoreboard.php
+chmod 755 /usr/bin/HomeworkInspector/$HW_NAME/CreateScoreboard.php
+
+#cp -f HomeworkScoreboard/CreateScoreboard_v2.php /usr/bin/HomeworkInspector/$HW_NAME/
+#replace_tag /usr/bin/HomeworkInspector/$HW_NAME/CreateScoreboard_v2.php
+#chmod 755 /usr/bin/HomeworkInspector/$HW_NAME/CreateScoreboard_v2.php
+
+
+
+cp -f HomeworkScoreboard/*.ttf /usr/bin/HomeworkInspector/$HW_NAME/
+cp -f HomeworkScoreboard/TextToImage.php /usr/bin/HomeworkInspector/$HW_NAME/
+replace_tag /usr/bin/HomeworkInspector/$HW_NAME/TextToImage.php
+chmod 755 /usr/bin/HomeworkInspector/$HW_NAME/TextToImage.php
+
+
+mkdir /var/www/html/$HW_NAME/
+cp -fR HomeworkInspector_php/*   /var/www/html/$HW_NAME/
+cp -fR HomeworkScoreboard/CreateScoreboard_release.html  /var/www/html/$HW_NAME/
+replace_tag /var/www/html/$HW_NAME/config.php
+replace_tag /var/www/html/$HW_NAME/upload.php
+
+mkdir /var/homeworks
+mkdir /var/homeworks/$HW_NAME
+mkdir /var/homeworks/$HW_NAME/config
+mkdir /var/homeworks/$HW_NAME/queue
+rm -rf  /var/homeworks/$HW_NAME/customized_templates
+cp -fR customized_templates /var/homeworks/$HW_NAME/
+
+cp -Rf HomeworkCodes/$HW_NAME/homework_inspector_config /var/homeworks/$HW_NAME/config/
+chmod -R 700 /var/homeworks 
+chown -R apache.apache /var/homeworks
+
+chmod -R 700 /var/homeworks/$HW_NAME 
+chown -R apache.apache /var/homeworks/$HW_NAME
+
+
+chcon -t httpd_cache_t /var/homeworks
+chcon -R -t httpd_cache_t /var/homeworks/$HW_NAME
+
+touch /var/log/HomeworkInspector.log
+chcon -t var_log_t /var/log/HomeworkInspector.log
+
+
+

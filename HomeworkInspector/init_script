@@ -1,0 +1,93 @@
+#!/bin/bash
+
+
+# this is run with root privilege
+# $1 will be the workspace directory (with '/' at the end)
+# S2 will be the src dir (with '/' at the end)
+# $3 will be the src file name ($filename_on_server in config.php)
+# $4 will be the homework name (e.g. hw4)
+# $5 will be the unix job_uid user id (e.g. HOMEWORK_USER_0000000)
+# $6 will be the unix job gid
+
+cd $1
+cp -f /usr/bin/HomeworkInspector/$4/skeleton_code/* $1
+
+cp -f /usr/bin/HomeworkInspector/$4/test_target $1
+chmod 755 $1"test_target"
+chcon -t homework_exec_t  $1"test_target"
+
+cp -f /usr/bin/HomeworkInspector/$4/reliable_wrapper.py $1
+chmod 755 $1"reliable_wrapper.py"
+
+cp -f /usr/bin/HomeworkInspector/$4/get_setting_value.py $1
+chmod 755 $1"get_setting_value.py"
+
+cp -f /usr/bin/HomeworkInspector/$4/progress_log.py $1
+chmod 755 $1"progress_log.py"
+
+cp -f /usr/bin/HomeworkInspector/$4/callgrind_annotate_filter.py $1
+chmod 755 $1"callgrind_annotate_filter.py"
+
+cp -f /usr/bin/HomeworkInspector/$4/if_setting_has.py $1
+chmod 755 $1"if_setting_has.py"
+
+cp -f /usr/bin/HomeworkInspector/$4/valgrind.memcheck.supp $1
+chmod 755 $1"valgrind.memcheck.supp"
+
+cp $2setting $1
+
+rm -f $2analysis_result
+touch $2analysis_result
+
+chmod 600 $1"input.txt"
+chmod 600 $1"output.txt.gold"
+
+
+
+LANGTYPE=$(./get_setting_value.py language)
+
+	unzip ./code.zip -d customized
+	chown -R $5:$6 customized
+	rm -rf customized/build.sh
+	rm -rf customized/run.sh
+	rm -rf customized/input.txt
+	rm -rf customized/output.txt.*
+	mv -f customized/* .
+	rm -rf customized
+
+	gpg build.sh.gpg
+    if (($?!=0)); then
+		echo 'invalid build.sh signature' >> gcc_internal.report
+		echo '-1' > gcc_exit_code.report
+		exit -3
+	fi
+
+	gpg run.sh.gpg
+	if (($?!=0)); then
+		echo 'invalid run.sh signature' >> gcc_internal.report
+		echo '-1' > gcc_exit_code.report
+		exit -3
+    fi
+
+	chmod 777 build.sh
+	chmod 777 run.sh
+
+    echo '0' > gcc_exit_code.report
+
+
+
+filter_illegal_words()
+{
+		awk '/\\[\s]*$/ {gsub(/\\/,""); printf "%s", $1; next }{print}' $file > tmp_xxx
+		
+
+        grep -v 'CALLGRIND_' tmp_xxx > tmp_yyy
+        mv -f tmp_yyy $file
+        rm -f tmp_xxx tmp_yyy
+}
+
+
+#file=code.cpp
+#filter_illegal_words
+
+

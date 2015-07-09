@@ -1,0 +1,31 @@
+#31 23 * * *  cd /usr/bin/HomeworkInspector/2011_fall_ds_HW7; ./TextToImage.php /var/homeworks/2011_fall_ds_HW7/ /var/www/html/2011_fall_ds_HW7/
+
+
+
+*/47 * * * * /usr/bin/HomeworkInspector/2013_spring_algo_hw1/CreateScoreboard.php > /dev/null 2&>1
+0  */1  * * *  cd /usr/bin/HomeworkInspector/2013_spring_algo_hw1; nice ./TextToImage.php /var/homeworks/2013_spring_algo_hw1/ /var/www/html/2013_spring_algo_hw1/   > /dev/null 2&>1
+
+*/47 * * * * /usr/bin/HomeworkInspector/2013_spring_algo_hw2/CreateScoreboard.php  > /dev/null 2&>1
+0  */1  * * *  cd /usr/bin/HomeworkInspector/2013_spring_algo_hw2; nice ./TextToImage.php /var/homeworks/2013_spring_algo_hw2/ /var/www/html/2013_spring_algo_hw2/   > /dev/null 2&>1
+
+
+
+*/47 * * * * /usr/bin/HomeworkInspector/2013_spring_algo_hw4/CreateScoreboard.php  > /dev/null 2&>1
+0  */1  * *  *  cd /usr/bin/HomeworkInspector/2013_spring_algo_hw4; nice ./TextToImage.php /var/homeworks/2013_spring_algo_hw4/ /var/www/html/2013_spring_algo_hw4/   > /dev/null 2&>1
+
+*/10 * * * * /usr/bin/HomeworkInspector/2013_spring_algo_facial_recognition/CreateScoreboard.php  > /dev/null 2&>1
+*  */1  * *  *  cd /usr/bin/HomeworkInspector/2013_spring_algo_facial_recognition; nice ./TextToImage.php /var/homeworks/2013_spring_algo_facial_recognition/ /var/www/html/2013_spring_algo_facial_recognition/   > /dev/null 2&>1
+
+
+*/10 * * * * /usr/bin/HomeworkInspector/2013_spring_algo_mst/CreateScoreboard.php  > /dev/null 2&>1
+*  */1  * *  *  cd /usr/bin/HomeworkInspector/2013_spring_algo_mst; nice ./TextToImage.php /var/homeworks/2013_spring_algo_mst/ /var/www/html/2013_spring_algo_mst/   > /dev/null 2&>1
+
+0 */24 * * *  tmpwatch -a -f 7d /tmp/
+
+#*/44 * * * *  /usr/bin/HomeworkInspector/valgrind_zombie_hunter.py
+
+
+#0 0 26 6 * chmod 000 /var/www/html/2013_spring_algo_mst/upload.php
+#0 0 26 6 * chmod 000 /var/www/html/2013_spring_algo_mst/upload_core.php
+
+

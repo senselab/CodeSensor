@@ -1,0 +1,72 @@
+#!/bin/bash
+
+# this is run with nobody privilege
+# $1 will be the workspace directory (with '/' at the end)
+# S2 will be the src dir (with '/' at the end)
+# $3 will be the src file name ($filename_on_server in config.php)
+# $4 (DISABLE_OPTIMIZATION) 
+
+ulimit -v 5242880
+
+export HOME=~
+
+LANGTYPE=$(./get_setting_value.py language) 
+
+src_dir = $2
+mkdir $1ccache
+CCACHE_DIR=$1ccache
+export CCACHE_DIR
+
+cd $1
+openssl sha1 ./$3 > sha1.report.final 2>&1
+
+if [[ "$LANGTYPE" = "cpp" || "$LANGTYPE" = "cpp11" ]]; then
+	g++ -M ./code.cpp > gcc_dependency.report 2>&1
+	cp -f gcc_dependency.report gcc_dependency.report.final
+else
+	echo "" > gcc_dependency.report.final	
+fi
+#### For homework in which students submit  .cpp files
+#mv ./$3 code.cpp
+
+#### For homework in which students submit .h files
+#### use init_script to copy the main file (code.cpp) to $1
+
+:'
+if [[ "$LANGTYPE" = "customized" ]]; then'
+	cp -f gcc_exit_code.report  gcc_exit_code.report.final
+
+	##### init_script will set gcc_exit_code to a non zero value if custmoized init failed (e.g. invalid signatures)
+	grep '^\s*0\s*$' gcc_exit_code.report.final  
+	if (($?==0)); then
+		./build.sh  > gcc_internal.report.final 2>&1
+	fi	
+:'	
+else
+
+###########
+	if [ "$4" == "DISABLE_OPTIMIZATION" ]; then
+    	make OPTIMIZATION=''  > gcc_internal.report.final 2>&1
+	else
+    	make  > gcc_internal.report.final 2>&1
+	fi
+
+	echo $? > gcc_exit_code.report
+	cp -f gcc_exit_code.report  gcc_exit_code.report.final
+	size code.o > segment_size.report
+	cp -f segment_size.report segment_size.report.final
+	nm -P -C code.o > symbols.report.final
+
+
+fi
+'
+
+
+
+###chcon -t homework_exec_t ./a.out
+
+./progress_log.py gcc 1
+./progress_log.py setting 0
+./progress_log.py code 0
+
+

@@ -1,0 +1,16 @@
+
+deadline="3015-4-5 23:59:59"
+
+disallowed_header =   "valgrind", "/valgrind.h", "/callgrind.h" 
+
+
+disallowed_func =  "syscall", "tmpfile"
+
+allow_direct_syscall = "0"
+
+delete_workspace="1"
+
+child_process_timeout_seconds = "86400"
+
+HW_NUM="HW3"
+HW_TITLE="Number of Inversions"

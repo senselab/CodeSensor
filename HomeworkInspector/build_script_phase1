@@ -1,0 +1,179 @@
+#!/bin/bash
+
+# this is run with nobody privilege
+# $1 will be the workspace directory (with '/' at the end)
+# S2 will be the src dir (with '/' at the end)
+# $3 will be the src file name ($filename_on_server in config.php)
+# $4 (DISABLE_OPTIMIZATION) 
+
+
+######## filter sensitive words
+
+filter()
+{
+        grep -v '.report\|.output\|.final\|address\|Address' $file > tmp_xxx
+        mv -f tmp_xxx $file
+        rm -f tmp_xxx
+}
+
+:'mem_check_filter_stdout_stderror()
+{
+    egrep '^==[0-9]+==\s' $file > tmp_xxx
+    mv -f tmp_xxx $file
+    rm -f tmp_xxx
+}'
+
+
+#ulimit -v 9242880
+ 
+
+src_dir=$2
+
+
+cd $1
+
+
+VALGRIND_PATH=/usr/bin
+#VALGRIND_PATH=/usr/local/valgrind_coc/bin
+
+VALGRIND_SMC_CHECK="--smc-check=all"
+
+LANGTYPE=$(./get_setting_value.py language)
+
+MEMORY_SIZE_CAP=$(./get_setting_value.py memory_size_cap)
+
+TEST_TARGET="./test_target"
+
+#############
+
+$TEST_TARGET -p 2>&1
+mv output.txt output.txt.vanilla
+
+
+#############
+
+grep '^\s*#\s*@memcheck=false\s*$' ./run.sh  
+if (($?==0)); then
+
+#    $TEST_TARGET 2>&1
+ #   mv output.txt output.txt.memcheck
+	cp output.txt.vanilla output.txt.memcheck
+#    rm -rf output.txt
+#    $VALGRIND_PATH/valgrind.safe  --suppressions=./valgrind.memcheck.supp   --trace-children=yes --log-file=valgrind.memcheck.report.%p echo  
+else
+    rm -rf output.txt
+    $VALGRIND_PATH/valgrind.safe  --suppressions=./valgrind.memcheck.supp   --track-origins=yes --show-reachable=yes  --leak-check=full  --trace-children=yes --log-file=valgrind.memcheck.report.%p $TEST_TARGET 
+    mv output.txt output.txt.memcheck
+
+    awk 'FNR==1 && NR!=1 {print "+--------------------------------------------------------------------------------+"}{print}'  valgrind.memcheck.report.* >> valgrind.memcheck.report
+
+    file=valgrind.memcheck.report
+    #mem_check_filter_stdout_stderror
+    filter
+    cp -f valgrind.memcheck.report valgrind.memcheck.report.final
+    #cp -f check_pattern_concise_memcheck.report check_pattern_concise_memcheck.report.final
+
+fi
+
+
+./progress_log.py memcheck 1
+./progress_log.py memcheck_check
+
+
+grep '^\s*#\s*@callgrind=false\s*$' ./run.sh  
+if (($?==0)); then
+    cp output.txt.vanilla output.txt.callgrind
+else
+
+    rm -rf callgrind.out.* output.txt
+    $VALGRIND_PATH/valgrind.safe --tool=callgrind $VALGRIND_SMC_CHECK   --trace-children=yes --log-file=valgrind.callgrind.report.%p $TEST_TARGET 
+#	$VALGRIND_PATH/valgrind.safe --tool=callgrind $VALGRIND_SMC_CHECK --collect-openclose=yes  --trace-children=yes --log-file=valgrind.callgrind.report.%p $TEST_TARGET 
+
+	grep '^\s*#\s*@callgrind=maybe\s*$' ./run.sh
+    CALLGRIND_MAYBE=$?
+    diff output.txt output.txt.vanilla
+    OUTPUT_DIFF=$?
+	
+	if (($CALLGRIND_MAYBE==0)) &&  (($OUTPUT_DIFF !=0))
+	then
+		rm -rf valgrind.callgrind.report.*
+		cp output.txt.vanilla output.txt.callgrind
+	else 	
+		mv output.txt output.txt.callgrind
+
+		awk 'FNR==1 && NR!=1 {print "+--------------------------------------------------------------------------------+"}{print}'  valgrind.callgrind.report.* >> valgrind.callgrind.report
+
+
+			###### log jvm bug
+			hs_error=`egrep -o '\s(/tmp/jvm-[0-9]+/hs_error\.log)' test_target.output`
+
+			if [[ $hs_error=*"jvm"* ]]; then
+				cat $hs_error >> valgrind.callgrind.report
+			fi
+			###################
+
+
+		for f in callgrind.out.*
+		do
+			$VALGRIND_PATH/callgrind_annotate --auto=yes $f >> valgrind.callgrind_detail.report.unfiltered
+		done
+
+
+
+		./callgrind_annotate_filter.py valgrind.callgrind_detail.report.unfiltered > valgrind.callgrind_detail.report
+		file=valgrind.callgrind.report
+		filter
+		file=valgrind.callgrind_detail.report
+		filter
+		cp -f valgrind.callgrind.report  valgrind.callgrind.report.final
+		#cp -f check_pattern_concise_callgrind.report check_pattern_concise_callgrind.report.final
+		cp -f valgrind.callgrind_detail.report valgrind.callgrind_detail.report.final
+	fi
+fi
+
+
+./progress_log.py callgrind 1
+./progress_log.py callgrind_check
+./progress_log.py callgrind_annotate
+
+ltrace -o ltrace.report -C -i -S -f -e sysconf,mmap,munmap,mprotect,syscall,pthread_create,vfork,fork,system,execve,execvp,open,creat,unlink,close,mknod,mknodat ./a.out 
+
+cp -f ltrace.report ltrace.report.final
+
+rm -rf output.txt
+grep '^\s*#\s*@massif=false\s*$' ./run.sh  
+if (($?==0)); then
+    cp output.txt.vanilla output.txt.massif
+else
+    echo "-Djava.compiler=NONE" >> jvm.options
+    $VALGRIND_PATH/valgrind.safe  --tool=massif  --time-unit=ms  --pages-as-heap=yes --error-exitcode=444 --trace-children=yes --log-file=valgrind.massif.report.%p $VALGRIND_SMC_CHECK $TEST_TARGET  
+    mv output.txt output.txt.massif
+    awk 'FNR==1 && NR!=1 {print "+--------------------------------------------------------------------------------+"}{print}'  valgrind.massif.report.* >> valgrind.massif.report
+
+    for f in massif.out.*
+    do
+    #    cat $f >> valgrind.massif_out.report
+        $VALGRIND_PATH/ms_print  $f |  sed  's/WRITE_CHECK_MSG/PRINT_MSG/g' >> valgrind.massif_out_ms_print.report 
+        mv -f $f $f.report.final
+    done
+
+    file=valgrind.massif.report
+    filter
+    file=valgrind.massif_out_ms_print.report
+    filter
+    cp -f valgrind.massif.report  valgrind.massif.report.final
+    cp -f valgrind.massif_out.report  valgrind.massif_out.report.final 
+    cp -f valgrind.massif_out_ms_print.report   valgrind.massif_out_ms_print.report.final 
+fi
+
+./progress_log.py massif 1
+
+cp -f script_runtime_log.report script_runtime_log.report.final
+
+
+### append run.sh settings to analysis result
+
+grep -oP '^\s*#\s*\K(@[a-zA-Z0-9]+=[a-zA-Z0-9]+)'  run.sh > run.sh.settings.report.final
+
+#rm -f /tmp/vgdb-pipe-*
+

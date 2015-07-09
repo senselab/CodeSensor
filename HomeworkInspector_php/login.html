@@ -1,0 +1,37 @@
+<html>
+<head>
+<title>Codesensor HW view result</title>
+</head>
+<body>
+<br/>
+<br/>
+
+<FORM name="logininfo" id="logininfo" action="login_old_faithful/login_old_faithful.php" method="POST" enctype="multipart/form-data" onsubmit="HashPassword();">
+<input type="hidden" name="MAX_FILE_SIZE" value="2048000">
+Student ID : 
+<input type="text" name="userid" id="userid"><br/><br/>
+Password : 
+<input type="password" name="_userpwd" id="_userpwd"><br/>
+<input type="hidden" name="userpwd" id="userpwd"><br/>
+
+<br/>
+	<INPUT TYPE="SUBMIT"  value="Submit">
+	<INPUT TYPE="RESET"  value="Reset">
+</FORM>
+
+<script src="CryptoJS/rollups/sha256.js"></script>
+<script src="CryptoJS/components/enc-base64-min.js"></script>
+<script src="CryptoJS/rollups/hmac-sha1.js"></script>
+
+<script>
+	function HashPassword()
+	{
+		var pwd_hash = CryptoJS.HmacSHA1(document.getElementById("_userpwd").value, "sense lab");
+		var pwd = pwd_hash.toString(CryptoJS.enc.Base64);
+//		alert(pwd);
+		document.getElementById("userpwd").value =  pwd;
+	}
+</script>
+
+</body>
+</html>

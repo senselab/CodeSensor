@@ -1,0 +1,63 @@
+
+{
+   <jvm_cond>
+   Memcheck:Cond
+   ...
+   obj:/usr/lib/jvm/*
+}
+
+
+{
+   <jvm_leak>
+   Memcheck:Leak
+   ...
+   obj:/usr/lib/jvm/*
+}
+
+
+{
+   <jvm_addr4>
+   Memcheck:Addr4
+   ...
+   obj:/usr/lib/jvm/*
+		
+}
+
+
+{
+   <bash1>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:xmalloc
+   fun:set_locale_var
+   fun:set_default_lang
+   fun:main
+}
+
+{
+   <bash2>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   ...
+   obj:/usr/bin/bash
+   ...
+}
+
+{
+   <bash3>
+   Memcheck:Leak
+   match-leak-kinds: indirect
+   ...
+   obj:/usr/bin/bash
+   ...
+}
+
+{
+   <bash4>
+   Memcheck:Leak
+   match-leak-kinds: definite
+   ...
+   obj:/usr/bin/bash
+   ...
+}

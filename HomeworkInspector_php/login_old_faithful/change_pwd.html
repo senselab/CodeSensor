@@ -1,0 +1,56 @@
+<html>
+<head>
+<title>CodeSensor Change Passowrd</title>
+</head>
+<body>
+<br/>
+<br/>
+
+
+<FORM action="change_pwd.php" method="POST" enctype="multipart/form-data" onsubmit="HashPassword();">
+
+Student ID : 
+<input type="text" name="userid"><br/>
+Old Password : 
+<input type="password" name="_userpwd" id="_userpwd"><br/>
+<input type="hidden" name="userpwd" id="userpwd"><br/>
+<br/>
+
+New Password : 
+<input type="password" name="_newpwd" id="_newpwd"><br/>
+<input type="hidden" name="newpwd" id="newpwd"><br/>
+
+Retype New Password : 
+<input type="password" name="_newpwd_retype" id="_newpwd_retype"><br/>
+<input type="hidden" name="newpwd_retype" id="newpwd_retype"><br/>
+
+
+<br/>
+<INPUT TYPE="SUBMIT"  value="Submit">
+<INPUT TYPE="RESET"  value="Reset">
+</FORM>
+
+<script src="https://crypto-js.googlecode.com/svn/tags/3.1.2/build/rollups/sha256.js"></script>
+<script src="https://crypto-js.googlecode.com/svn/tags/3.1.2/build/components/enc-base64-min.js"></script>
+<script src="https://crypto-js.googlecode.com/svn/tags/3.1.2/build/rollups/hmac-sha1.js"></script>
+
+<script>
+	function _HashPassword(ElementID, ElementID_hidden)
+	{
+		var pwd_hash = CryptoJS.HmacSHA1(document.getElementById(ElementID).value, "sense lab");
+		var pwd = pwd_hash.toString(CryptoJS.enc.Base64);
+	//	alert(pwd);
+		document.getElementById(ElementID_hidden).value =  pwd;
+	}
+
+	function HashPassword()
+	{
+		_HashPassword("_userpwd", "userpwd");
+		_HashPassword("_newpwd", "newpwd");
+		_HashPassword("_newpwd_retype", "newpwd_retype");
+	}
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,219 @@
+policy_module( homework, 1.0.0)
+
+gen_require(`
+
+	type gpg_secret_t;
+	type user_devpts_t;
+	type httpd_t;
+	type httpd_cache_t;
+	type httpd_tmp_t;
+	type unconfined_t;
+	type fs_t;
+	type var_log_t;
+	type setroubleshootd_t;
+	type etc_t;
+	type ld_so_t;
+	type ld_so_cache_t;
+	type lib_t;
+	type null_device_t;
+	type proc_t;
+	type usr_t;
+	type ksmtuned_t;
+	type home_root_t;
+	type init_t;
+	type bin_t;
+	type devtty_t;
+	type locale_t;
+	type locate_t;
+	type passwd_file_t;
+	type ldconfig_exec_t;
+	type security_t;
+	type shell_exec_t;
+	type sysctl_kernel_t;
+	type sysctl_t;
+	type sysfs_t;
+	type  textrel_shlib_t;
+	type tmp_t;
+	type user_tmp_t;
+	type var_run_t;
+	type root_t;
+	type var_t;
+	type device_t;
+	type systemd_tmpfiles_t;
+	type cpu_online_t;	
+	type syslogd_t;
+	type sysctl_vm_t;
+	type sysctl_vm_overcommit_t;
+	type  urandom_device_t;
+	type kernel_t;
+	type tmpfs_t;
+	type zero_device_t;
+
+	class process{ fork };
+	
+	role unconfined_r;
+	
+')
+
+type homework_t;
+type homework_exec_t;
+type homework_inspector_exec_t;
+
+
+#============= ROLES ==============
+role system_r types homework_t;
+role unconfined_r types homework_t;
+
+
+#============= homework_t ==============
+allow homework_t tmpfs_t:dir read;
+allow homework_t tmpfs_t:filesystem getattr;
+allow homework_t zero_device_t:chr_file read;
+allow homework_t home_root_t:dir {search getattr};
+allow homework_t etc_t:dir search;
+allow homework_t homework_exec_t:file { read entrypoint };
+allow homework_t httpd_t:fd use;
+allow homework_t httpd_cache_t:file ioctl;
+allow homework_t ld_so_cache_t:file { read getattr open };
+allow homework_t ld_so_t:file read;
+allow homework_t lib_t:dir search;
+allow homework_t lib_t:file { read getattr open execute execute_no_trans ioctl };
+allow homework_t lib_t:lnk_file read;
+allow homework_t null_device_t:chr_file { read write };
+allow homework_t proc_t:lnk_file read;
+allow homework_t self:dir search;
+allow homework_t self:file { read open write };
+allow homework_t self:lnk_file read;
+allow homework_t self:process {execmem sigkill};
+allow homework_t unconfined_t:fd use;
+allow homework_t unconfined_t:process sigchld;
+allow homework_t usr_t:dir {search read open};
+allow homework_t usr_t:file { read getattr open ioctl };
+allow homework_t var_log_t:file { read append ioctl};
+allow homework_t bin_t:dir {search getattr};
+allow homework_t bin_t:file { read getattr open execute };
+allow homework_t bin_t:lnk_file {read getattr};
+allow homework_t devtty_t:chr_file { read write open };
+allow homework_t etc_t:file { read getattr open };
+allow homework_t homework_exec_t:file { getattr open execute execute_no_trans };
+allow homework_t init_t:process sigchld;
+allow homework_t ld_so_t:file { execute open getattr };
+allow homework_t locale_t:dir search;
+allow homework_t locale_t:file { read getattr open };
+allow homework_t locale_t:lnk_file read;
+allow homework_t null_device_t:chr_file { getattr ioctl };
+allow homework_t passwd_file_t:file { read getattr open };
+allow homework_t proc_t:dir {search read};
+allow homework_t proc_t:file { read getattr open };
+allow homework_t security_t:dir getattr;
+allow homework_t security_t:filesystem getattr;
+allow homework_t self:fifo_file { write read ioctl getattr};
+allow homework_t self:file getattr;
+allow homework_t self:process { fork signal sigchld };
+allow homework_t self:unix_stream_socket { create connect };
+allow homework_t shell_exec_t:file { read getattr open execute execute_no_trans};
+allow homework_t sysctl_kernel_t:dir search;
+allow homework_t sysctl_t:dir search;
+allow homework_t sysfs_t:dir search;
+allow homework_t textrel_shlib_t:file { read getattr open execute };
+allow homework_t tmp_t:dir { write remove_name search add_name };
+allow homework_t tmp_t:fifo_file { read create unlink open };
+allow homework_t tmp_t:file { write getattr read create unlink open };
+allow homework_t user_tmp_t:dir { write remove_name search add_name getattr };
+allow homework_t user_tmp_t:file { write getattr read create unlink open append ioctl execute_no_trans};
+allow homework_t var_run_t:dir search;
+allow homework_t var_run_t:lnk_file read;
+allow homework_t root_t:dir {search getattr};
+allow homework_t root_t:lnk_file {read};
+allow homework_t device_t:dir search;
+allow homework_t var_t:dir search;
+allow homework_t httpd_cache_t:file { read append };
+allow homework_t null_device_t:chr_file open;
+allow homework_t self:capability dac_override;
+allow homework_t user_devpts_t:chr_file { read write getattr };
+allow homework_t user_tmp_t:file execute;
+allow homework_t bin_t:file {ioctl execute_no_trans};
+allow homework_t cpu_online_t:file { read open };
+allow homework_t etc_t:lnk_file read;
+allow homework_t lib_t:dir { read getattr open };
+allow homework_t lib_t:lnk_file getattr;
+allow homework_t self:process getsched;
+allow homework_t sysfs_t:dir { read open };
+allow homework_t tmp_t:dir getattr;
+allow homework_t user_tmp_t:dir { read open };
+allow homework_t usr_t:dir getattr;
+allow homework_t sysctl_vm_t:dir search;
+allow homework_t sysctl_vm_overcommit_t:file {open read};
+allow homework_t urandom_device_t:chr_file { read getattr open };
+
+
+
+#============= homework_exec_t ==============
+allow homework_exec_t fs_t:filesystem associate;
+
+#============= homework_inspector_exec_t ==============
+allow homework_inspector_exec_t fs_t:filesystem associate;
+
+#============= httpd_t ==============
+allow httpd_t homework_inspector_exec_t:file { read execute open };
+allow httpd_t unconfined_t:process transition;
+allow httpd_t var_log_t:file {open read};
+allow httpd_t homework_t:process signal;
+allow httpd_t unconfined_t:process signal;
+allow httpd_t gpg_secret_t:file { read getattr };
+allow httpd_t httpd_tmp_t:file execute;
+allow httpd_t self:capability { ipc_lock fowner};
+allow httpd_t self:process setrlimit;
+
+
+#============= init_t ==============
+allow init_t homework_exec_t:file { getattr unlink };
+allow init_t homework_t:dir search;
+allow init_t homework_t:file { read getattr open };
+allow init_t homework_t:process { signal signull };
+
+
+#============= setroubleshootd_t ==============
+allow setroubleshootd_t homework_exec_t:file getattr;
+allow setroubleshootd_t homework_inspector_exec_t:file getattr;
+
+
+#============= kernel_t ==============
+allow kernel_t homework_t:dir search;
+allow kernel_t homework_t:file { read getattr open };
+allow kernel_t homework_t:lnk_file read;
+
+
+#============= unconfined_t ==============
+allow unconfined_t homework_exec_t:file { execute read relabelto unlink open getattr write setattr};
+allow unconfined_t homework_inspector_exec_t:file { unlink setattr read getattr write ioctl entrypoint relabelto open };
+allow unconfined_t homework_t:process { siginh rlimitinh transition noatsecure };
+allow unconfined_t homework_t:dir {getattr search};
+allow unconfined_t homework_t:file {read open getattr};
+allow unconfined_t homework_t:process { getattr signal sigkill};
+
+
+#============= ksmtuned_t ==============
+allow ksmtuned_t homework_t:dir { getattr search };
+allow ksmtuned_t homework_t:file { read open };
+
+
+#============= systemd_tmpfiles_t ==============
+allow systemd_tmpfiles_t homework_exec_t:file getattr;
+
+
+#============= syslogd_t ==============
+allow syslogd_t homework_t:dir search;
+allow syslogd_t homework_t:file { read getattr open };
+allow syslogd_t homework_t:lnk_file read;
+
+#============= locate_t ==============
+allow locate_t homework_inspector_exec_t:file getattr;
+allow locate_t homework_exec_t:file getattr;
+
+
+type_transition unconfined_t homework_exec_t : process homework_t;
+type_transition httpd_t homework_inspector_exec_t : process unconfined_t;
+
+
+

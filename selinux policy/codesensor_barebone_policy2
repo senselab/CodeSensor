@@ -1,0 +1,23 @@
+policy_module( homework, 1.0.0)
+
+gen_require(`
+
+	type httpd_t;
+	type unconfined_t;
+	
+	class process{ fork };
+')
+
+type homework_t;
+type homework_exec_t;
+type homework_inspector_exec_t;
+
+
+
+
+type_transition unconfined_t homework_exec_t : process homework_t;
+
+type_transition httpd_t homework_inspector_exec_t : process unconfined_t;
+
+
+

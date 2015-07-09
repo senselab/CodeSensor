@@ -1,0 +1,45 @@
+/*
+
+Darko Bunic
+http://www.redips.net/
+Nov, 2010.
+
+*/
+
+body {
+	font-family: arial;
+}
+
+/* green button - start */
+.green {
+	color: white;
+	background-color: #41A128;
+	border-width: 1px;
+}
+
+/* blue button - stop */
+.blue {
+	color: white;
+	background-color: #6A93D4;
+	border-width: 1px;
+}
+
+/* progress container */
+div#progress_container {
+	border: 6px double #ccc; 
+	width: 200px; 
+	margin: 0px;
+	padding: 0px;
+	text-align: left;
+}
+
+/* progress bar */
+div#progress {
+	color: white;
+	background-color: #FF8D40; 
+	height: 12px;
+	padding-bottom: 2px;
+	font-size: 12px;
+	text-align: center;
+	overflow: hidden;
+}

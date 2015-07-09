@@ -1,0 +1,4 @@
+#!/bin/bash
+
+cp -rf web_frontpage/* /var/www/html/
+

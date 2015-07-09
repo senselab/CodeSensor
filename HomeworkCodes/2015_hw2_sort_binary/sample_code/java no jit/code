@@ -1,0 +1,55 @@
+import java.io.*;
+import java.util.*;
+import org.msgpack.core.*;
+import org.msgpack.core.buffer.MessageBuffer;
+import org.msgpack.value.*;
+import org.msgpack.value.holder.FloatHolder;
+import org.msgpack.value.holder.IntegerHolder;
+import org.msgpack.value.holder.ValueHolder;
+
+/**
+ * Created by Hank on 2015/1/4.
+ */
+public class code {
+    public static void main(String[] args) throws FileNotFoundException, IOException {
+
+     //   Process("warmup.txt", "garbage.txt", false);
+        Process("input.txt", "output.txt", true);
+    }
+
+    static void Process(String infile, String outfile, Boolean bPack) throws FileNotFoundException, IOException 
+    {
+
+        MessagePacker packer = MessagePack.newDefaultPacker(new FileOutputStream(outfile));
+
+        MessageUnpacker unpacker = MessagePack.newDefaultUnpacker(new FileInputStream(infile));
+
+        
+        int k,m;
+        int cntTestData = unpacker.unpackInt();
+
+        System.out.printf("There are %d cases\n", cntTestData);
+
+
+        for ( k = 0; k < cntTestData; k++) {
+            int len = unpacker.unpackArrayHeader();
+            
+            int[] numbers = new int[len];
+
+            for ( m = 0; m < len; m++)
+                numbers[m] = unpacker.unpackInt();
+
+            Arrays.sort(numbers);
+
+            if (bPack) {
+                packer.packArrayHeader(len);
+                for ( m = 0; m<len; m++)
+                    packer.packInt(numbers[m]);
+            }   
+
+        }
+
+        packer.close();
+
+    }
+}
