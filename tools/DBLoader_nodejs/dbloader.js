@@ -1,6 +1,7 @@
 
 var GoogleCryptoJS = require ("./hmac-sha1.js")
 var util = require('util');
+var fs = require('fs');
 var parseXlsx = require('excel');
 var printf = require('printf');
 var assert = require('assert');
@@ -16,12 +17,17 @@ async.waterfall(
 
 	[
 		function(callback) {
+			/* for loading excel format studnet roster
 			parseXlsx('student_roster.xlsx', function(err,data) {
 				if (err) 
 					throw err;
 				//printTwoDimArray(data);
 				//console.log("World");
 				student_data = ExtractStudentData(data);
+				callback(null);
+			});*/
+			parseTextRoster('student_roster.txt', function(data) {
+				student_data = data;
 				callback(null);
 			});
 		},
@@ -135,6 +141,24 @@ function trim_space(s)
 {
 	s = s.replace(/(^\s*)|(\s*$)/gi, "");
 	return s;
+}
+
+function parseTextRoster(filename, callback)
+{
+	var student_data = new Array();
+
+	var lines = fs.readFileSync(filename).toString().split("\n");
+	
+	for ( i in lines ) {
+		elements = lines[i].split(/[\s,]+/);
+
+		if (elements.length !=2) continue;
+//		console.log(elements);
+		student_data.push({ID:elements[0], NAME:elements[1]});
+	}
+
+
+	callback(student_data);
 }
 
 function ExtractStudentData(array)
