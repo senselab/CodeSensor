@@ -1,4 +1,15 @@
 
+# Prerequisites
+	- CentOS 7 x86_64
+	- Apache Web Server
+		```sh
+			yum install httpd
+			systemctl start httpd
+			systemctl enable httpd
+		```	
+	- MariaDB Server
+
+
 # Directory Layout
 
 
