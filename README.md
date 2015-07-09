@@ -1,14 +1,27 @@
 
 # Prerequisites
-	- CentOS 7 x86_64
-	- Apache Web Server
-		```sh
-			yum install httpd
-			systemctl start httpd
-			systemctl enable httpd
-		```	
-	- MariaDB Server
+ - CentOS 7 x86_64
+ - Apache Web Server
 
+  ```sh
+    yum install httpd
+    systemctl start httpd
+    systemctl enable httpd
+  ```
+ - MariaDB Server
+
+  ```sh
+  	yum install mariadb-server mariadb
+  	systemctl start mariadb
+  	systemctl enable mariadb
+  	/usr/bin/mysql_secure_installation
+  ```
+ - PHP
+
+  ```sh
+   	yum install php php-mysql php-gd php-ldap php-odbc php-pear php-xml php-xmlrpc php-mbstring php-snmp php-soap curl curl-devel 
+	systemctl restart httpd.service 
+  ```
 
 # Directory Layout
 
