@@ -23,12 +23,14 @@
   systemctl restart httpd.service 
   ```
  - Node.js
+
   ```sh
   sudo yum install epel-release
   sudo yum install nodejs
   sudo yum install npm
   ```
  - Tools and Liraries
+ 
   ```sh
   sudo yum groupinstall 'Development Tools'
   sudo yum install libuuid-devel
