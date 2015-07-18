@@ -27,8 +27,8 @@ fi
 
 
 
-#VALGRIND_PATH=/usr/bin
-VALGRIND_PATH=/usr/local/valgrind_coc/bin
+VALGRIND_PATH=/usr/bin
+#VALGRIND_PATH=/usr/local/valgrind_coc/bin
 
 function replace_tag() {
     awk -vHW_NAME="$HW_NAME" '{gsub("<!CODESENSOR_HW_NAME!>",HW_NAME);print $0}' $1 > $1.tmp.replacetag
@@ -130,5 +130,8 @@ chcon -R -t httpd_cache_t /var/homeworks/$HW_NAME
 touch /var/log/HomeworkInspector.log
 chcon -t var_log_t /var/log/HomeworkInspector.log
 
-
+mkdir /home/homeworks_workplace
+chown root.root /home/homeworks_workplace
+chcon -t tmp_t /home/homeworks_workplace
+ln -s   /home/homeworks_workplace    /homeworks_workplace
 
