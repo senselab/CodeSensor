@@ -8,7 +8,7 @@ disallowed_func =  "syscall", "fork", "vfork","clone", "system", "creat", "mknod
 
 allow_direct_syscall = "0"
 
-delete_workspace="1"
+delete_workspace="0"
 
 child_process_timeout_seconds = "86400"
 
