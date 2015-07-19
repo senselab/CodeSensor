@@ -35,6 +35,7 @@
   sudo yum groupinstall 'Development Tools'
   sudo yum install libuuid-devel
   sudo yum install valgrind
+  sudo yum install gnupg2
   ```
 
 # Directory Layout
@@ -43,6 +44,11 @@
 
 # Installation 
 
+1. Import GPG keys
+  ```sh
+    gpg --import tools/codesensor_key.asc
+    gpg --edit-key hankwu@g2.nctu.edu.tw   ;Need to trust the key
+  ```
 1. Create database
  - Create database *code_sensor_2015*
  - Add user 'codesensor' (pwd: *nctucodesensor* ) to database *code_sensor_2015*
@@ -84,45 +90,11 @@
   sudo ./install
   sudo ./install_webpage
  ```
-
 4. Open web browser and connect to *http://localhost/2015_hw1_sort_text/*
 5. Try login with ID:*0000000*   PWD:*algo0000000*
-6. 
-
-install
-config.php
-CreateScore.php
-
-yum install selinux-policy
-yum install selinux-policy-devel
-
-1. selinux policy
-
+6. Upload *HomeworkCodes/2015_hw1_sort_text/sample_code/cpp/code.cpp*
+8. Generate scoreboard
 ```sh
-  make
-  semodule -i homework.pp
-```
-
-2. HomeworkInspector/src  
-
-  make
-  cp HomeworkInspector /usr/bin/HomeworkInspector/
-
-  ln -s build_script /usr/bin/HomeworkInspector/build_script
-  ln -s init_script /usr/bin/HomeworkInspector/init_script
-  ln -s skeleton_code /usr/bin/HomeworkInspector/skeleton_code
-
-  chmod u+s /usr/bin/HomeworkInspector/HomeworkInspector
-  chown root /usr/bin/HomeworkInspector/HomeworkInspector
-  chcon -t homework_inspector_exec_t /usr/bin/HomeworkInspector/HomeworkInspector
-
-  chcon -t homework_exec_t /usr/bin/valgrind.safe
-
-3. HomeworkInspector_php
-
-  cp * /var/www/html
-
-
-4. mkdir /var/homeworks
-
-5. mkdir /var/homeworks/queue
+  sudo  /usr/bin/HomeworkInspector/2015_hw1_sort_text/CreateScoreboard.php
+ ```
+9. Open browser to http://localhost/2015_hw1_sort_text/ and check if the submission is on the scoreboard
