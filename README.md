@@ -40,6 +40,10 @@
 
 # Directory Layout
 
+ /usr/bin/HomeworkInspector/2015_hw1_sort_text    => executables and scripts are put here
+ /homeworks_workplace                             => working directory for the compilation and execution of submitted code
+ /var/homeworks/2015_hw1_sort_text                => submitted source code and analysis result are put here
+ /var/www/html/2015_hw1_sort_text                 => webpage for the homework
 
 
 # Installation 
