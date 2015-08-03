@@ -44,7 +44,7 @@
 | /usr/bin/HomeworkInspector/2015_hw1_sort_text  | Executables and scripts are put here  |
 | /homeworks_workplace  | Working directory for the compilation and execution of submitted code |
 | /var/homeworks/2015_hw1_sort_text | Submitted source code and analysis result are put here |
-| /var/www/html/2015_hw1_sort_text | webpage for the homework |
+| /var/www/html/2015_hw1_sort_text | Webpages for the homework |
 
 
 # Installation 
