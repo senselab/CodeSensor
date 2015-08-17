@@ -51,6 +51,7 @@
 
 1. Import GPG keys
   ```sh
+  
     gpg --import tools/codesensor_key.asc
     gpg --edit-key hankwu@g2.nctu.edu.tw   ;Need to trust the key
   ```
