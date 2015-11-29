@@ -104,3 +104,7 @@
   sudo  /usr/bin/HomeworkInspector/2015_hw1_sort_text/CreateScoreboard.php
  ```
 9. Open browser to http://localhost/2015_hw1_sort_text/ and check if the submission is on the scoreboard
+10. Open firewall
+```
+  firewall-cmd --zone=public --add-port=80/tcp
+```
