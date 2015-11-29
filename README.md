@@ -66,7 +66,7 @@
     - Each row contains an ID, NAME pair for each account
  - Load user accounts to DB
   ```sh
-    cd tools/DBLoader_nodejs
+    cd Codesensor/tools/DBLoader_nodejs
     npm -y install
     node dbloader.js
   ```
@@ -80,7 +80,7 @@
   ```
  - Compile and install SELinux module
   ```sh
-    cd 'selinux policy'/
+    cd  Codesensor/selinux policy
     ln -sf /usr/share/selinux/devel/Makefile
     make 
     sudo semodule -i codesensor.pp
