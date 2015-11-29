@@ -76,7 +76,7 @@
 2. SELinux module
  - Install SELinux development library
   ```sh
-    sudo yum selinux-policy-devel
+    sudo yum install selinux-policy-devel
   ```
  - Compile and install SELinux module
   ```sh
