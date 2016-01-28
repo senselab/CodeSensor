@@ -100,9 +100,9 @@
 5. Try login with ID:*0000000*   PWD:*algo0000000*
 6. Upload *HomeworkCodes/2015_hw1_sort_text/sample_code/cpp/code.cpp*
 8. Generate scoreboard
- ```sh
+```sh
   sudo  /usr/bin/HomeworkInspector/2015_hw1_sort_text/CreateScoreboard.php
- ```
+```
 9. Open browser to http://localhost/2015_hw1_sort_text/ and check if the submission is on the scoreboard
 10. Open firewall
  ```
