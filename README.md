@@ -28,6 +28,7 @@
   sudo yum install epel-release
   sudo yum install nodejs
   sudo yum install npm
+  sudo npm install npm -g ;update npm version
   ```
  - Tools and Liraries
  
@@ -57,7 +58,15 @@
   ```
 1. Create database
  - Create database *code_sensor_2015*
- - Add user 'codesensor' (pwd: *nctucodesensor* ) to database *code_sensor_2015*
+ - Add user 'codesensor' (pwd: *nctucodesensor* ) to database *code_sensor_2015*  
+ - Reference MySQL command
+  ```
+	 mysql -h localhost -u root -p;	
+	 CREATE USER 'codesensor'@'localhost' IDENTIFIED BY 'nctucodesensor';
+	 CREATE DATABASE code_sensor_2015;
+	 GRANT ALL PRIVILEGES ON code_sensor_2015 .* TO 'codesensor'@'localhost';
+	 FLUSH PRIVILEGES;
+  ```
  - Initialze tables for *code_sensor_2015*
   ```sh
     sudo mysql -u codesensor -p code_sensor_2015 < tools/db_schema.sql
