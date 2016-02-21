@@ -4,6 +4,8 @@ error_reporting(0);
 //error_reporting(E_ALL);
 //ini_set('display_errors','On');
 
+//set your timezone
+date_default_timezone_set("Asia/Taipei");
 
 $HW_NAME = "<!CODESENSOR_HW_NAME!>";
 
