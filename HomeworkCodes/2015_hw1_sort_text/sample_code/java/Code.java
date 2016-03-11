@@ -4,7 +4,7 @@ import java.util.*;
 /**
  * Created by Hank on 2015/1/4.
  */
-public class code {
+public class Code {
     public static void main(String[] args) throws FileNotFoundException, IOException {
 
 
