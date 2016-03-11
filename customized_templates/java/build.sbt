@@ -25,5 +25,5 @@ autoScalaLibrary := false
 // library dependencies. (orginization name) % (project name) % (version)
 libraryDependencies ++= Seq(
 //   "org.msgpack" % "msgpack-core" % "0.7.0-p8-SNAPSHOT20150409" from  "https://senselab.tw/artifacts/msgpack-core-0.7.0-p8-SNAPSHOT.jar"
-   	"org.msgpack" % "msgpack-core" % "0.7.0-p9"
+   	"org.msgpack" % "msgpack-core" % "0.8.3"
 )
