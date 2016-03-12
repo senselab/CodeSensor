@@ -37,8 +37,13 @@
   sudo yum install libuuid-devel
   sudo yum install valgrind
   sudo yum install gnupg2
+  sudo yum install p7zip
   ```
+  
+ - (Optional)
 
+	Install msgpack for C/C++ and Python
+	
 # Directory Layout
 | Path  | Files |
 | ------------- | ------------- |
