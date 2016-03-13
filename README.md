@@ -42,7 +42,7 @@
   
  - (Optional)
 
-	Install msgpack for C/C++ and Python
+	Install msgpack for C/C++ and Python for running sample code that uses msgpack for input and output data
 	
 # Directory Layout
 | Path  | Files |
