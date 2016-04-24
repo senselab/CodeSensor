@@ -76,6 +76,8 @@ cp -f HomeworkInspector/src/test_target /usr/bin/HomeworkInspector/$HW_NAME
 
 mkdir /usr/bin/HomeworkInspector/$HW_NAME/skeleton_code
 cp -f HomeworkCodes/$HW_NAME/skeleton/* /usr/bin/HomeworkInspector/$HW_NAME/skeleton_code/
+dos2unix  /usr/bin/HomeworkInspector/$HW_NAME/skeleton_code/verify.sh
+dos2unix /usr/bin/HomeworkInspector/$HW_NAME/skeleton_code/verifier.py
 
 
 
@@ -133,5 +135,5 @@ chcon -t var_log_t /var/log/HomeworkInspector.log
 mkdir /home/homeworks_workplace
 chown root.root /home/homeworks_workplace
 chcon -t tmp_t /home/homeworks_workplace
-ln -s   /home/homeworks_workplace    /homeworks_workplace
+ln -s   /home/homeworks_workplace    /
 
