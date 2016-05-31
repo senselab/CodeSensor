@@ -40,7 +40,7 @@
 using namespace std;
 
 
-
+#define MAX_CHECK_RECORD_NUM  2048
 
 string HW_NAME;	 // e.g. hw4
 
@@ -461,7 +461,7 @@ quit_close_file:;
 
 void merge_check_pattern_files(const char* szDir)
 {
-#define MAX_CHECK_RECORD_NUM  512
+
 
 	struct tCheckRecord
 	{
