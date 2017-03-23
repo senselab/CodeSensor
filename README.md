@@ -34,6 +34,7 @@
 
   ```sh
   sudo yum groupinstall 'Development Tools'
+  sudo yum install openssl-devel
   sudo yum install libuuid-devel
   sudo yum install valgrind
   sudo yum install gnupg2
