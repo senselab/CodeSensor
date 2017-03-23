@@ -1,4 +1,4 @@
-policy_module( homework, 1.0.0)
+policy_module( codesensor, 1.0.0)
 
 gen_require(`
 
@@ -216,4 +216,4 @@ type_transition unconfined_t homework_exec_t : process homework_t;
 type_transition httpd_t homework_inspector_exec_t : process unconfined_t;
 
 
-
+allow unconfined_t homework_inspector_exec_t:file { execute execute_no_trans };
