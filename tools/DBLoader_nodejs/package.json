@@ -3,10 +3,10 @@
   "version": "1.0.0",
   "author": "Hank",
   "dependencies": {
-    "excel": "~0.1.1",
-    "printf": "~0.2.0",
-    "async": "~0.9.0",
-    "mysql": "~2.5.4",
-    "read": "~1.0.5"
+    "excel": ">=0.1.1",
+    "printf": ">=0.2.0",
+    "async": ">=0.9.0",
+    "mysql": ">=2.5.4",
+    "read": ">=1.0.5"
   }
 }

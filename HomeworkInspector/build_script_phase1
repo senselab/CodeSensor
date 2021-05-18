@@ -16,12 +16,12 @@ filter()
         rm -f tmp_xxx
 }
 
-:'mem_check_filter_stdout_stderror()
+mem_check_filter_stdout_stderror()
 {
     egrep '^==[0-9]+==\s' $file > tmp_xxx
     mv -f tmp_xxx $file
     rm -f tmp_xxx
-}'
+}
 
 
 #ulimit -v 9242880

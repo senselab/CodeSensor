@@ -21,6 +21,7 @@ cd $1
 openssl sha1 ./$3 > sha1.report.final 2>&1
 
 if [[ "$LANGTYPE" = "cpp" || "$LANGTYPE" = "cpp11" ]]; then
+	cp code code.cpp
 	g++ -M ./code.cpp > gcc_dependency.report 2>&1
 	cp -f gcc_dependency.report gcc_dependency.report.final
 else
@@ -32,8 +33,8 @@ fi
 #### For homework in which students submit .h files
 #### use init_script to copy the main file (code.cpp) to $1
 
-:'
-if [[ "$LANGTYPE" = "customized" ]]; then'
+
+if [[ "$LANGTYPE" = "customized" ]]; then
 	cp -f gcc_exit_code.report  gcc_exit_code.report.final
 
 	##### init_script will set gcc_exit_code to a non zero value if custmoized init failed (e.g. invalid signatures)
@@ -41,15 +42,17 @@ if [[ "$LANGTYPE" = "customized" ]]; then'
 	if (($?==0)); then
 		./build.sh  > gcc_internal.report.final 2>&1
 	fi	
-:'	
+	
 else
 
 ###########
+	export PATH=$PATH:/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin
 	if [ "$4" == "DISABLE_OPTIMIZATION" ]; then
-    	make OPTIMIZATION=''  > gcc_internal.report.final 2>&1
+    	./build.sh  > gcc_internal.report.final 2>&1
 	else
-    	make  > gcc_internal.report.final 2>&1
+    	./build.sh opt > gcc_internal.report.final 2>&1
 	fi
+	
 
 	echo $? > gcc_exit_code.report
 	cp -f gcc_exit_code.report  gcc_exit_code.report.final
@@ -59,7 +62,7 @@ else
 
 
 fi
-'
+
 
 
 
