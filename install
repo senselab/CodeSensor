@@ -2,8 +2,8 @@
 
 #yum install p7zip
 
-
-HW_NAME="2015_hw1_sort_text"
+HW_NAME=$1
+#HW_NAME="2015_hw1_sort_text"
 #HW_NAME="2015_hw2_sort_binary"
 #HW_NAME="2015_hw3_num_inversions"
 #HW_NAME="2015_hw4_distinct_patterns"
@@ -12,6 +12,11 @@ HW_NAME="2015_hw1_sort_text"
 #HW_NAME="2015_hw7_tower_of_hanoi"
 #HW_NAME="2015_hw8_exam_papers"
 #HW_NAME="2015_hw9_tower_of_hanoi_big"
+
+if [ "$HW_NAME" = "" ]; then
+	echo 'usage: sudo ./install [HW_NAME]'
+	exit 0
+fi
 
 HW_NUM=$(HomeworkInspector/get_setting_value.py HomeworkCodes/$HW_NAME/homework_inspector_config HW_NUM)
 HW_TITLE=$(HomeworkInspector/get_setting_value.py HomeworkCodes/$HW_NAME/homework_inspector_config HW_TITLE)

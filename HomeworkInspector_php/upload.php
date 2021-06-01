@@ -108,10 +108,10 @@ echo '</script>';
 	echo '<select name="language" id="language_type" onchange="OnLanguageTypeSelect()">';
 //	echo '<option value="cpp11">C++11 (experimental)</option>';
 	echo '<option value="cpp" selected>C++</option>';	
-    echo '<option value="java" >Java</option>';
+//    echo '<option value="java" >Java</option>';
 //    echo '<option value="clj">Clojure</option>';
 //	echo '<option value="js">Javascript</option>';
-	echo '<option value="customized">customized</option>';
+//	echo '<option value="customized">customized</option>';
 	echo '</select><br/><br/>';
 
 	echo '<font style="font-size: 16px">File to upload : </font>' ;

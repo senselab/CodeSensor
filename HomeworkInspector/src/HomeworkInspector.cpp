@@ -2101,7 +2101,6 @@ int main(int argc, char* argv[]) {
 		char buf[2048];
 		passwd *pwd;
 
-		sprintf(buf, "export PATH=$PATH:/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin");
 		system(buf);
 		
 		sprintf(username, "%s%s", ID_PREFIX, argv[1] );

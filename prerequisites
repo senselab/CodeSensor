@@ -1,0 +1,28 @@
+#!/bin/sh
+
+# Apache
+sudo dnf install -y httpd
+sudo dnf install -y mod_ssl
+
+# MariaDB
+sudo dnf install -y mariadb-server mariadb
+
+# PHP
+sudo dnf install -y php php-gd php-ldap php-odbc php-pear php-xml php-xmlrpc php-mbstring php-snmp php-soap curl curl-devel php-mysqlnd
+
+# Node.js
+sudo dnf install -y epel-release nodejs npm
+
+# Selinux
+sudo dnf install -y selinux-policy-devel
+
+# Tools & Libraries
+sudo dnf groupinstall -y 'Development Tools'
+sudo dnf install -y openssl-devel
+sudo dnf install -y libuuid-devel
+sudo dnf install -y valgrind
+sudo dnf install -y gnupg2
+sudo dnf install -y p7zip
+sudo dnf install -y dos2unix
+sudo dnf install -y pcre-devel
+

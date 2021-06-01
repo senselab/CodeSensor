@@ -9,9 +9,6 @@ date_default_timezone_set("Asia/Taipei");
 
 $HW_NAME = "<!CODESENSOR_HW_NAME!>";
 
-$MYSQL_DB_NAME = "code_sensor_2015";
-$MYSQL_USER_ID = "codesensor";
-$MYSQL_USER_PWD =  "nctucodesensor";
 $LOGON_SESSION_TTL = 86400; //seconds
 $code_sensor_homepage = "http://".$_SERVER['HTTP_HOST']."/".$HW_NAME."/";
 $MAX_VIEW_PROGRESS_VALUE = 5;

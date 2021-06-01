@@ -8,9 +8,6 @@ var assert = require('assert');
 var async = require('async');
 var mysql = require('mysql');	
 var student_data;
-var mysql_account = 'codesensor';
-var mysql_pwd = 'nctucodesensor';
-var dbname = 'code_sensor_2015';
 
 
 async.waterfall(
