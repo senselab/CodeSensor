@@ -9,8 +9,8 @@ gpg --gen-key
 # cpp
 gpg --sign templates/cpp/build.sh
 gpg --sign templates/cpp/run.sh
-mv templates/cpp/build.sh.gpg ../customized_templates/cpp
-mv templates/cpp/run.sh.gpg ../customized_templates/cpp
+mv templates/cpp/build.sh.gpg ../customized_templates/cpp/
+mv templates/cpp/run.sh.gpg ../customized_templates/cpp/
 
 sudo cp -r ~/.gnupg /usr/share/httpd
 
