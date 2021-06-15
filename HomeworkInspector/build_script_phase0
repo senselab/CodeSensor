@@ -34,15 +34,14 @@ fi
 #### use init_script to copy the main file (code.cpp) to $1
 
 
-if [[ "$LANGTYPE" = "customized" ]]; then
+if [[ "$LANGTYPE" = "python" ]]; then
 	cp -f gcc_exit_code.report  gcc_exit_code.report.final
 
 	##### init_script will set gcc_exit_code to a non zero value if custmoized init failed (e.g. invalid signatures)
 	grep '^\s*0\s*$' gcc_exit_code.report.final  
 	if (($?==0)); then
 		./build.sh  > gcc_internal.report.final 2>&1
-	fi	
-	
+	fi
 else
 
 ###########

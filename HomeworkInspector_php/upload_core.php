@@ -150,8 +150,8 @@ else {
 		case "cpp":
 			$customized_template = $root_dir . "customized_templates/cpp/"; 	// /var/homeworks/{hw_name}/customized_templates/cpp
 			break;
-		case "java":
-			$customized_template = $root_dir . "customized_templates/java/"; 	
+		case "python":
+			$customized_template = $root_dir . "customized_templates/python/"; 	
 			break;			
 		default:
 			echo "<font size=5 color=red>Unknown language type</font></h1>";
