@@ -220,7 +220,7 @@ int ReadLTraceLog(char* filename)
 	int OVECCOUNT = 30;
 	int rc;
 	int             ovector[OVECCOUNT];
-	const char pattern[] = "\\[0x([0-9a-fA-F]+)\\][\\s]+([a-zA-Z_0-9]+)[\\s]*(\\([^\\n\\r]+)";
+	const char pattern[] = "[0-9]+[\\s]\\[0x([0-9a-fA-F]+)\\][\\s]+([a-zA-Z_0-9]+)@SYS[\\s]*([^\\n\\r]+)";
 	char entry_func[512];
 	unsigned long long entry_addr, effective_addr;
 
@@ -247,10 +247,9 @@ int ReadLTraceLog(char* filename)
 	entry_func[0] = 0;
 	
 	while(fgets(buf, sizeof(buf), fp) ) {
-		
 		if ( strstr(buf, "__libc_start_main"))
 			continue;
-		
+
 		rc = pcre_exec(re, NULL, buf, strlen(buf), 0, 0, ovector, OVECCOUNT);
 
 		if ( rc==1+3){
@@ -287,7 +286,7 @@ int ReadLTraceLog(char* filename)
 			
 			//////// check
 
-			if ( !strcmp(syscall_name, "SYS_fstat"))	{	/// to detect StartCallUsageCheck / EndCallUsageCheck
+			if ( !strcmp(syscall_name, "fstat"))	{	/// to detect StartCallUsageCheck / EndCallUsageCheck
 				long long nToken;
 
 				if ( !ExtractNumber(nToken, call_argument, "\\(",  ",") )
@@ -332,10 +331,10 @@ quit_start_end_tokens:;
 
 
 
-			if ( !bCALL_USAGE_CHECK_ENABLED)
+			/*if ( !bCALL_USAGE_CHECK_ENABLED)
 				goto nextone;
 			if ( IsAddrInSkipRange(effective_addr))
-				goto nextone;
+				goto nextone;*/
 /*				
 			 if ( !IsAddrInAlertRanges(effective_addr) )
 				 goto nextone;
@@ -410,7 +409,7 @@ nextone:;
 	
 	pcre_free(re);
 	
-	
+
 	return 0;
 } 
 
@@ -487,9 +486,9 @@ int CheckSyscallUsage(const char* szSrcDir)
 	sprintf(PATH2, "%s/%s", szSrcDir, LTRACE_REPORT_FILE);
 	sprintf(PATH3, "%s/%s", szSrcDir, SYSCALL_USAGE_SKIP_RANGE);
 	
-	ReadSkipRange(PATH3);
-	 
-	if ( ReadProcMaps(PATH1) == 0 &&  ReadLTraceLog(PATH2) == 0) {
+	//ReadSkipRange(PATH3);
+	//ReadProcMaps(PATH1);
+	if ( ReadLTraceLog(PATH2) == 0 ) {
 
 		PrintViolations(szSrcDir);
 		ClearViolations();

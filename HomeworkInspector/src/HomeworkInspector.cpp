@@ -1755,7 +1755,7 @@ void build(const char* job, bool bDisableOptimization) {
 //	close(ino_fd_new_reports);
 	move_reports();
 /////////////////////////////////////////////////
-finish_build:;
+
 	
 	time(&tmEnd);
 	
@@ -1801,7 +1801,7 @@ finish_build:;
 			//goto cleanup;
 		}	
 		
-		
+finish_build:;
 		sprintf(buf,  "cd %s; python3 %s/progress_log.py illegal_headers > /dev/null 2>&1", sz_src_dir.c_str(), sz_workspace.c_str());
 		system(buf);
 		sprintf( buf, "cd %s; python3 %s/progress_log.py analysis_result 1 > /dev/null 2>&1", sz_src_dir.c_str(), sz_workspace.c_str());
