@@ -10,7 +10,7 @@
 
 <?php
 
-//include ("config.php");
+include ("config.php");
 
 include_once ("account.php");
 
@@ -25,8 +25,10 @@ if ( !CookieAuthenticate($id , $name) ) {
 
 
 
-		
+//proc_close(proc_open("$homework_inspector_executable  ". $id . "  ".$HW_NAME. "  kill", Array(), $foo));
 exec("$homework_inspector_executable  ". $id . "  ".$HW_NAME. "  expire", $dummy_output );
+$queue_file =  $queue_dir . "/". $id;
+unlink($queue_file);
 
 echo "<font size=4 color=green>Ok !<br/></font></h1>";
 
