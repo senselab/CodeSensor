@@ -55,7 +55,7 @@
 
 <div>
 	<div id="f1">
-		<div id="id_code_sensor" class="TitleFont"  ><a href="https://codesensor.tw" class="CodeSensorFont" target="_top">Code Sensor</a></div>	 <div id="id_polynomial" class="TitleFontSmall">POLYNOMIAL TIME VERIFIABLE</div>
+		<div id="id_code_sensor" class="TitleFont"  ><a href="https://codesensor.cs.nycu.edu.tw" class="CodeSensorFont" target="_top">Code Sensor</a></div>	 <div id="id_polynomial" class="TitleFontSmall">POLYNOMIAL TIME VERIFIABLE</div>
 	</div>
 	
 	<div id="f2">
