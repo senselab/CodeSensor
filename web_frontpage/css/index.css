@@ -134,9 +134,12 @@ h1 {
   display: inline-block;
 }
 
+/*
 .btn:hover {
   cursor: url(https://cur.cursors-4u.net/symbols/sym-1/sym46.cur), auto;
 }
+*/
+
 .blue {
   color: #55acee;
   border: 2px #55acee solid;
