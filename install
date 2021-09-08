@@ -2,6 +2,11 @@
 
 #yum install p7zip
 
+if [ $USER != "root" ]; then
+	echo "need root privilege"
+	exit 0
+fi
+
 HW_NAME=$1
 #HW_NAME="2015_hw1_sort_text"
 #HW_NAME="2015_hw2_sort_binary"
@@ -142,3 +147,4 @@ chown root.root /home/homeworks_workplace
 chcon -t tmp_t /home/homeworks_workplace
 ln -s   /home/homeworks_workplace    /
 
+sudo crontab -l | { cat; echo "*/5 * * * * /usr/bin/HomeworkInspector/$HW_NAME/CreateScoreboard.php"; } | crontab -

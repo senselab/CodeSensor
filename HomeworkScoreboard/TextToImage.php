@@ -103,7 +103,7 @@ function TextToImage($single_line, $font_size,  $out_file, $extra_line_space = 0
 	  $font = 'consola.ttf';
 */
 
-	  $font = 'WenQuanYiMicroHeiMono.ttf';
+	  $font = getcwd() . '/WenQuanYiMicroHeiMono.ttf';
 
   // some variables to set
 

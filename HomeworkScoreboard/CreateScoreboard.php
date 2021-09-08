@@ -42,7 +42,7 @@ $NUM_OF_EFFECTIVE_SUBMISSION = 0;
 
 $REMAINING_P_SCORE = $TOTAL_P_SCORE;
 
-$SHOW_CODE = false;
+$SHOW_CODE = true;
 $CODE_BLANK_FILE = "/usr/bin/HomeworkInspector/$HW_NAME/code_blank.h";
 
 $score_board = array();

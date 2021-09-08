@@ -25,4 +25,5 @@ sudo dnf install -y gnupg2
 sudo dnf install -y p7zip
 sudo dnf install -y dos2unix
 sudo dnf install -y pcre-devel
-
+sudo dnf install -y pinentry
+sudo dnf install -y python3
