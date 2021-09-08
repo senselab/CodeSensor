@@ -1,0 +1,22 @@
+#!/bin/bash
+
+SCRIPT_RELATIVE_DIR=$(dirname "${BASH_SOURCE[0]}") 
+cd $SCRIPT_RELATIVE_DIR 
+
+
+gpg --gen-key
+
+# cpp
+gpg --sign templates/cpp/build.sh
+gpg --sign templates/cpp/run.sh
+mv templates/cpp/build.sh.gpg ../customized_templates/cpp/
+mv templates/cpp/run.sh.gpg ../customized_templates/cpp/
+
+# python
+gpg --sign templates/python/build.sh
+gpg --sign templates/python/run.sh
+mv templates/python/build.sh.gpg ../customized_templates/python/
+mv templates/python/run.sh.gpg ../customized_templates/python/
+
+sudo cp -r ~/.gnupg /usr/share/httpd
+

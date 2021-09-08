@@ -1587,12 +1587,6 @@ void build(const char* job, bool bDisableOptimization) {
 		log("Processing job [%s] src_dir [%s]  src_file [%s]", job,
 				sz_src_dir.c_str(), sz_src_file.c_str());
 
-		///gen gpg sig
-		{
-			sprintf(buf, "gpg --homedir /root/.gnupg --yes -ab -o %s/gpg.sig.asc %s/%s", sz_src_dir.c_str(), sz_src_dir.c_str(), sz_src_file.c_str());
-			system(buf);
-		}
-
 
 		sprintf(buf, "cp -f %s/%s %s/%s",sz_src_dir.c_str(), sz_src_file.c_str(), sz_workspace.c_str(), sz_src_file.c_str());
 		system(buf);
@@ -1761,7 +1755,7 @@ void build(const char* job, bool bDisableOptimization) {
 //	close(ino_fd_new_reports);
 	move_reports();
 /////////////////////////////////////////////////
-finish_build:;
+
 	
 	time(&tmEnd);
 	
@@ -1795,7 +1789,7 @@ finish_build:;
 			fclose(fp);
 		}
 
-		sprintf( buf, "cd %s; python %s/progress_log.py analysis_result 1> /dev/null 2>&1", sz_src_dir.c_str(), sz_workspace.c_str());
+		sprintf( buf, "cd %s; python3 %s/progress_log.py analysis_result 1> /dev/null 2>&1", sz_src_dir.c_str(), sz_workspace.c_str());
 		system(buf);	
 	}
 	else{
@@ -1807,15 +1801,15 @@ finish_build:;
 			//goto cleanup;
 		}	
 		
-		
-		sprintf(buf,  "cd %s; python %s/progress_log.py illegal_headers > /dev/null 2>&1", sz_src_dir.c_str(), sz_workspace.c_str());
+finish_build:;
+		sprintf(buf,  "cd %s; python3 %s/progress_log.py illegal_headers > /dev/null 2>&1", sz_src_dir.c_str(), sz_workspace.c_str());
 		system(buf);
-		sprintf( buf, "cd %s; python %s/progress_log.py analysis_result 1 > /dev/null 2>&1", sz_src_dir.c_str(), sz_workspace.c_str());
+		sprintf( buf, "cd %s; python3 %s/progress_log.py analysis_result 1 > /dev/null 2>&1", sz_src_dir.c_str(), sz_workspace.c_str());
 		log(buf);
 		system(buf);
-		sprintf( buf, "cd %s; python %s/progress_log.py check_pattern_concise > /dev/null 2>&1", sz_src_dir.c_str(), sz_workspace.c_str());
+		sprintf( buf, "cd %s; python3 %s/progress_log.py check_pattern_concise > /dev/null 2>&1", sz_src_dir.c_str(), sz_workspace.c_str());
 		system(buf);
-		sprintf( buf, "cd %s; python %s/progress_log.py callcheck > /dev/null 2>&1", sz_src_dir.c_str(), sz_workspace.c_str());
+		sprintf( buf, "cd %s; python3 %s/progress_log.py callcheck > /dev/null 2>&1", sz_src_dir.c_str(), sz_workspace.c_str());
 		system(buf);
 		
 
@@ -2012,7 +2006,7 @@ void OverwriteAnalysisResult(const char* msg)
 	}
 	
 		
-	sprintf(buf,  "cd %s/current; python /usr/bin/HomeworkInspector/%s/progress_log.py analysis_result 1 > /dev/null 2>&1",  homework_user_root_dir, HW_NAME.c_str());
+	sprintf(buf,  "cd %s/current; python3 /usr/bin/HomeworkInspector/%s/progress_log.py analysis_result 1 > /dev/null 2>&1",  homework_user_root_dir, HW_NAME.c_str());
 	log(buf);
 	system(buf);
 }
@@ -2107,9 +2101,10 @@ int main(int argc, char* argv[]) {
 		char buf[2048];
 		passwd *pwd;
 
+		system(buf);
 		
 		sprintf(username, "%s%s", ID_PREFIX, argv[1] );
-		sprintf(buf, "useradd -s /sbin/nologin %s", username);
+		sprintf(buf, "/usr/sbin/useradd -s /sbin/nologin %s", username);
 		system(buf);
 		
 		{

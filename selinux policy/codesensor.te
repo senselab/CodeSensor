@@ -8,6 +8,7 @@ gen_require(`
 	type httpd_cache_t;
 	type httpd_tmp_t;
 	type unconfined_t;
+	type lsmd_t;
 	type fs_t;
 	type var_log_t;
 	type setroubleshootd_t;
@@ -15,6 +16,9 @@ gen_require(`
 	type ld_so_t;
 	type ld_so_cache_t;
 	type lib_t;
+	type sssd_public_t;
+	type sssd_var_lib_t;
+	type var_lib_t;
 	type null_device_t;
 	type proc_t;
 	type usr_t;
@@ -50,6 +54,10 @@ gen_require(`
 	type zero_device_t;
 
 	class process{ fork };
+	class file { getattr map open read };
+	class unix_stream_socket { read write };
+	class dir search;
+	class chr_file append;
 	
 	role unconfined_r;
 	
@@ -66,6 +74,21 @@ role unconfined_r types homework_t;
 
 
 #============= homework_t ==============
+allow homework_t bin_t:file map;
+allow homework_t homework_exec_t:file map;
+allow homework_t httpd_t:unix_stream_socket { read write };
+allow homework_t ld_so_cache_t:file map;
+allow homework_t ld_so_t:file map;
+allow homework_t lib_t:file map;
+allow homework_t null_device_t:chr_file append;
+allow homework_t shell_exec_t:file map;
+allow homework_t sssd_public_t:dir search;
+allow homework_t sssd_public_t:file { getattr map open read };
+allow homework_t sssd_var_lib_t:dir search;
+allow homework_t sysctl_kernel_t:file { open read };
+allow homework_t tmp_t:file map;
+allow homework_t user_tmp_t:file map;
+allow homework_t var_lib_t:dir search;
 allow homework_t tmpfs_t:dir read;
 allow homework_t tmpfs_t:filesystem getattr;
 allow homework_t zero_device_t:chr_file read;
@@ -186,11 +209,11 @@ allow kernel_t homework_t:lnk_file read;
 
 #============= unconfined_t ==============
 allow unconfined_t homework_exec_t:file { execute read relabelto unlink open getattr write setattr};
-allow unconfined_t homework_inspector_exec_t:file { unlink setattr read getattr write ioctl entrypoint relabelto open };
+allow unconfined_t homework_inspector_exec_t:file { unlink setattr read getattr write ioctl entrypoint relabelto open map };
 allow unconfined_t homework_t:process { siginh rlimitinh transition noatsecure };
 allow unconfined_t homework_t:dir {getattr search};
 allow unconfined_t homework_t:file {read open getattr};
-allow unconfined_t homework_t:process { getattr signal sigkill};
+allow unconfined_t homework_t:process { getattr signal sigkill}; 
 
 
 #============= ksmtuned_t ==============
@@ -210,6 +233,10 @@ allow syslogd_t homework_t:lnk_file read;
 #============= locate_t ==============
 allow locate_t homework_inspector_exec_t:file getattr;
 allow locate_t homework_exec_t:file getattr;
+
+#============= lsmd_t ==============
+allow lsmd_t homework_exec_t:file getattr;
+allow lsmd_t homework_inspector_exec_t:file getattr;
 
 
 type_transition unconfined_t homework_exec_t : process homework_t;
