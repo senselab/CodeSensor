@@ -86,8 +86,13 @@ if (($?==0)); then
 else
 
     rm -rf callgrind.out.* output.txt
-    $VALGRIND_PATH/valgrind.safe --tool=callgrind $VALGRIND_SMC_CHECK   --trace-children=yes --log-file=valgrind.callgrind.report.%p $TEST_TARGET 
-#	$VALGRIND_PATH/valgrind.safe --tool=callgrind $VALGRIND_SMC_CHECK --collect-openclose=yes  --trace-children=yes --log-file=valgrind.callgrind.report.%p $TEST_TARGET 
+
+    if [[ "$LANGTYPE" = "cpp_shm" ]]; then
+        $VALGRIND_PATH/valgrind.safe --tool=callgrind $VALGRIND_SMC_CHECK   --trace-children=yes --log-file=valgrind.callgrind.report.%p "--toggle-collect=solve(tTestData*)" $TEST_TARGET
+    else
+        $VALGRIND_PATH/valgrind.safe --tool=callgrind $VALGRIND_SMC_CHECK   --trace-children=yes --log-file=valgrind.callgrind.report.%p $TEST_TARGET
+#	    $VALGRIND_PATH/valgrind.safe --tool=callgrind $VALGRIND_SMC_CHECK --collect-openclose=yes  --trace-children=yes --log-file=valgrind.callgrind.report.%p $TEST_TARGET 
+    fi
 
 	grep '^\s*#\s*@callgrind=maybe\s*$' ./run.sh
     CALLGRIND_MAYBE=$?
@@ -173,7 +178,7 @@ cp -f script_runtime_log.report script_runtime_log.report.final
 
 ### append run.sh settings to analysis result
 
-grep -oP '^\s*#\s*\K(@[a-zA-Z0-9]+=[a-zA-Z0-9]+)'  run.sh > run.sh.settings.report.final
+grep -oP '^\s*#\s*\K(@[a-zA-Z0-9]+=[a-zA-Z0-9_]+)'  run.sh > run.sh.settings.report.final
 
 #rm -f /tmp/vgdb-pipe-*
 

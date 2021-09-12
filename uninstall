@@ -1,0 +1,27 @@
+#!/bin/bash
+
+if [ $USER != "root" ]; then
+	echo "need root privilege"
+	exit 0
+fi
+
+
+HW_NAME=$1
+
+if [ "$HW_NAME" = "" ]; then
+	echo "usage: sudo ./install [HW_NAME]"
+	exit 0
+fi
+
+rm -rf /usr/bin/HomeworkInspector/$HW_NAME
+rm -rf /var/www/html/$HW_NAME
+rm -rf /var/homeworks/$HW_NAME
+
+cp HomeworkInspector/src/shm_writer.cpp HomeworkCodes/$HW_NAME/skeleton
+cp HomeworkInspector/src/shm_makefile HomeworkCodes/$HW_NAME/skeleton/makefile
+cd HomeworkCodes/$HW_NAME/skeleton
+make all > /dev/null
+./shm_writer clean
+make clean > /dev/null
+rm makefile
+cd ../../..

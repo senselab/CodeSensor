@@ -150,9 +150,12 @@ else {
 		case "cpp":
 			$customized_template = $root_dir . "customized_templates/cpp/"; 	// /var/homeworks/{hw_name}/customized_templates/cpp
 			break;
+        case "cpp_shm":
+            $customized_template = $root_dir . "customized_templates/cpp_shm/";
+			break;
 		case "python":
 			$customized_template = $root_dir . "customized_templates/python/"; 	
-			break;			
+			break;		
 		default:
 			echo "<font size=5 color=red>Unknown language type</font></h1>";
 			unlink($queue_file);

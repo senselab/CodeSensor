@@ -3,14 +3,28 @@
 SCRIPT_RELATIVE_DIR=$(dirname "${BASH_SOURCE[0]}") 
 cd $SCRIPT_RELATIVE_DIR 
 
+if [ $USER = "root" ]; then
+	echo "need user privilege"
+	exit 0
+fi
 
-gpg --gen-key
+if [ "$1" == "" ]; then
+	gpg --gen-key
+fi
 
-# cpp
+
+# cpp file
 gpg --sign templates/cpp/build.sh
 gpg --sign templates/cpp/run.sh
 mv templates/cpp/build.sh.gpg ../customized_templates/cpp/
 mv templates/cpp/run.sh.gpg ../customized_templates/cpp/
+
+# cpp function
+gpg --sign templates/cpp_shm/build.sh
+gpg --sign templates/cpp_shm/run.sh
+mv templates/cpp_shm/build.sh.gpg ../customized_templates/cpp_shm/
+mv templates/cpp_shm/run.sh.gpg ../customized_templates/cpp_shm/
+cp templates/cpp_shm/shm_loader.cpp ../customized_templates/cpp_shm/
 
 # python
 gpg --sign templates/python/build.sh
@@ -18,5 +32,8 @@ gpg --sign templates/python/run.sh
 mv templates/python/build.sh.gpg ../customized_templates/python/
 mv templates/python/run.sh.gpg ../customized_templates/python/
 
-sudo cp -r ~/.gnupg /usr/share/httpd
+
+if [ "$1" == "" ]; then
+	sudo cp -r ~/.gnupg /usr/share/httpd
+fi
 

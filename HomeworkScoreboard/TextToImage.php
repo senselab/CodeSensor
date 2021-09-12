@@ -85,6 +85,7 @@ function tab2space($text, $spaces = 4)
 function TextToImage($single_line, $font_size,  $out_file, $extra_line_space = 0, $linenum = -1)
 {
 	global $global_tb;
+    global $HW_NAME;
   // show the correct header for the image type
   //header("Content-type: image/jpg");
 
@@ -103,7 +104,7 @@ function TextToImage($single_line, $font_size,  $out_file, $extra_line_space = 0
 	  $font = 'consola.ttf';
 */
 
-	  $font = getcwd() . '/WenQuanYiMicroHeiMono.ttf';
+	  $font = '/usr/bin/HomeworkInspector/' . $HW_NAME . '/WenQuanYiMicroHeiMono.ttf';
 
   // some variables to set
 

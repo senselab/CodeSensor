@@ -1,0 +1,4 @@
+all:
+	g++ -o shm_writer shm_writer.cpp -lrt
+clean:
+	rm shm_writer shm_writer.cpp

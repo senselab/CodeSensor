@@ -1,27 +1,24 @@
 #!/bin/bash
 
-#yum install p7zip
 
 if [ $USER != "root" ]; then
 	echo "need root privilege"
 	exit 0
 fi
 
+
 HW_NAME=$1
-#HW_NAME="2015_hw1_sort_text"
-#HW_NAME="2015_hw2_sort_binary"
-#HW_NAME="2015_hw3_num_inversions"
-#HW_NAME="2015_hw4_distinct_patterns"
-#HW_NAME="2015_hw5_range_minimum_query"
-#HW_NAME="2015_hw6_shooter"
-#HW_NAME="2015_hw7_tower_of_hanoi"
-#HW_NAME="2015_hw8_exam_papers"
-#HW_NAME="2015_hw9_tower_of_hanoi_big"
 
 if [ "$HW_NAME" = "" ]; then
-	echo 'usage: sudo ./install [HW_NAME]'
+	echo "usage: sudo ./install [HW_NAME]"
 	exit 0
 fi
+
+if [ ! -d "HomeworkCodes/$HW_NAME" ]; then
+	echo "directory doesn't exist"
+	exit 0
+fi
+
 
 HW_NUM=$(HomeworkInspector/get_setting_value.py HomeworkCodes/$HW_NAME/homework_inspector_config HW_NUM)
 HW_TITLE=$(HomeworkInspector/get_setting_value.py HomeworkCodes/$HW_NAME/homework_inspector_config HW_TITLE)
@@ -127,6 +124,7 @@ mkdir /var/homeworks/$HW_NAME/config
 mkdir /var/homeworks/$HW_NAME/queue
 rm -rf  /var/homeworks/$HW_NAME/customized_templates
 cp -fR customized_templates /var/homeworks/$HW_NAME/
+cp HomeworkCodes/$HW_NAME/skeleton/data.hpp /var/homeworks/$HW_NAME/customized_templates/cpp_shm/
 
 cp -Rf HomeworkCodes/$HW_NAME/homework_inspector_config /var/homeworks/$HW_NAME/config/
 chmod -R 700 /var/homeworks 
@@ -146,5 +144,14 @@ mkdir /home/homeworks_workplace
 chown root.root /home/homeworks_workplace
 chcon -t tmp_t /home/homeworks_workplace
 ln -s   /home/homeworks_workplace    /
+
+cp HomeworkInspector/src/shm_writer.cpp HomeworkCodes/$HW_NAME/skeleton
+cp HomeworkInspector/src/shm_makefile HomeworkCodes/$HW_NAME/skeleton/makefile
+cd HomeworkCodes/$HW_NAME/skeleton
+make all
+./shm_writer
+make clean
+rm makefile
+cd ../../..
 
 sudo crontab -l | { cat; echo "*/5 * * * * /usr/bin/HomeworkInspector/$HW_NAME/CreateScoreboard.php"; } | crontab -

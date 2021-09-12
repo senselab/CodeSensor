@@ -64,7 +64,6 @@
 	      <li><a href="javascript:link('upload.php');" class="MenuItemText">Submit</a></li>
 	      
 	      <li><a href="javascript:link('scoreboard.php');" class="MenuItemText">Scoreboard</a>        </li>
-	      <li><a href="javascript:link('scoreboard_rank.php');" class="MenuItemText">Rank</a>        </li>
 	    </ul>
 	</div>
 

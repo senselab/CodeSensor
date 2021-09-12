@@ -20,21 +20,30 @@ export CCACHE_DIR
 cd $1
 openssl sha1 ./$3 > sha1.report.final 2>&1
 
-if [[ "$LANGTYPE" = "cpp" || "$LANGTYPE" = "cpp11" ]]; then
-	cp code code.cpp
-	g++ -M ./code.cpp > gcc_dependency.report 2>&1
-	cp -f gcc_dependency.report gcc_dependency.report.final
-else
-	echo "" > gcc_dependency.report.final	
-fi
+
 #### For homework in which students submit  .cpp files
 #mv ./$3 code.cpp
 
 #### For homework in which students submit .h files
 #### use init_script to copy the main file (code.cpp) to $1
 
+if [[ "$LANGTYPE" = "cpp" || "$LANGTYPE" = "cpp_shm" ]]; then
+	export PATH=$PATH:/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin
 
-if [[ "$LANGTYPE" = "python" ]]; then
+	cp code code.cpp
+	g++ -M ./code.cpp > gcc_dependency.report 2>&1
+	cp -f gcc_dependency.report gcc_dependency.report.final
+
+	if [ "$4" == "DISABLE_OPTIMIZATION" ]; then
+    	./build.sh  > gcc_internal.report.final 2>&1
+	else
+    	./build.sh opt > gcc_internal.report.final 2>&1
+	fi
+
+	echo $? > gcc_exit_code.report
+	cp -f gcc_exit_code.report  gcc_exit_code.report.final
+elif [[ "$LANGTYPE" = "python" ]]; then
+	echo "" > gcc_dependency.report.final
 	cp -f gcc_exit_code.report  gcc_exit_code.report.final
 
 	##### init_script will set gcc_exit_code to a non zero value if custmoized init failed (e.g. invalid signatures)
@@ -42,28 +51,7 @@ if [[ "$LANGTYPE" = "python" ]]; then
 	if (($?==0)); then
 		./build.sh  > gcc_internal.report.final 2>&1
 	fi
-else
-
-###########
-	export PATH=$PATH:/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin
-	if [ "$4" == "DISABLE_OPTIMIZATION" ]; then
-    	./build.sh  > gcc_internal.report.final 2>&1
-	else
-    	./build.sh opt > gcc_internal.report.final 2>&1
-	fi
-	
-
-	echo $? > gcc_exit_code.report
-	cp -f gcc_exit_code.report  gcc_exit_code.report.final
-	size code.o > segment_size.report
-	cp -f segment_size.report segment_size.report.final
-	nm -P -C code.o > symbols.report.final
-
-
 fi
-
-
-
 
 ###chcon -t homework_exec_t ./a.out
 

@@ -168,7 +168,7 @@ allow homework_t usr_t:dir getattr;
 allow homework_t sysctl_vm_t:dir search;
 allow homework_t sysctl_vm_overcommit_t:file {open read};
 allow homework_t urandom_device_t:chr_file { read getattr open };
-
+allow homework_t tmpfs_t:dir search;
 
 
 #============= homework_exec_t ==============

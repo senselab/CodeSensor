@@ -1,4 +1,11 @@
 #!/bin/bash
 
+
+if [ $USER != "root" ]; then
+	echo "need root privilege"
+	exit 0
+fi
+
+
 cp -rf web_frontpage/* /var/www/html/
 
