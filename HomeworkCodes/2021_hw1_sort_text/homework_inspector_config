@@ -1,0 +1,16 @@
+
+deadline="2115-3-8 23:59:59"
+
+disallowed_header =  "/mman.h", "valgrind", "/valgrind.h", "/callgrind.h", "/ptrace.h", "/signal.h" 
+
+
+disallowed_func =  "syscall", "fork", "vfork","clone", "system", "creat", "mknod", "mknodat","tmpfile"
+
+allow_direct_syscall = "0"
+
+delete_workspace="0"
+
+child_process_timeout_seconds = "86400"
+
+HW_NUM="HW1"
+HW_TITLE="Sort (Text Input)"
