@@ -13,9 +13,11 @@ if [ "$HW_NAME" = "" ]; then
 	exit 0
 fi
 
-rm -rf /usr/bin/HomeworkInspector/$HW_NAME
+H_HW_NAME="h_$HW_NAME"
+
+rm -rf /usr/bin/HomeworkInspector/{$HW_NAME,$H_HW_NAME}
 rm -rf /var/www/html/$HW_NAME
-rm -rf /var/homeworks/$HW_NAME
+rm -rf /var/homeworks/{$HW_NAME,$H_HW_NAME}
 
 cp HomeworkInspector/src/shm_writer.cpp HomeworkCodes/$HW_NAME/skeleton
 cp HomeworkInspector/src/shm_makefile HomeworkCodes/$HW_NAME/skeleton/makefile

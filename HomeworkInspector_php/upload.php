@@ -154,6 +154,12 @@ echo '</script>';
 	echo '&nbsp';
 	
 	echo '<INPUT TYPE="RESET"  value="Reset" style="font-size: 16px;" />';
+
+	if ( $id == 'baseline' ) {
+		echo '<br><br><br><INPUT TYPE="SUBMIT" value="re-evaluate" formaction="re-eval.php" />';
+		echo '<INPUT TYPE="SUBMIT" value="move results" formaction="move.php" />';
+	}
+
 	echo '</FORM>';
 }
 else {

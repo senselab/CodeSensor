@@ -11,15 +11,15 @@ HW_NAME=$1
 
 if [ "$HW_NAME" = "" ]; then
 	echo "usage: sudo ./install [HW_NAME]"
-	exit 0
+	exit 1
 fi
 
 if [ ! -d "HomeworkCodes/$HW_NAME" ]; then
 	echo "directory doesn't exist"
-	exit 0
+	exit 1
 fi
 
-
+H_HW_NAME="h_$HW_NAME"
 HW_NUM=$(HomeworkInspector/get_setting_value.py HomeworkCodes/$HW_NAME/homework_inspector_config HW_NUM)
 HW_TITLE=$(HomeworkInspector/get_setting_value.py HomeworkCodes/$HW_NAME/homework_inspector_config HW_TITLE)
 
@@ -27,8 +27,8 @@ echo 'HW_NUM = '$HW_NUM
 echo 'HW_TITLE = '$HW_TITLE
 
 if [[ "$HW_NUM" = "NOT_FOUND" || "$HW_TITLE" = "NOT_FOUND" ]]; then
-	echo 'error !'
-	exit 0
+	echo 'error!'
+	exit 1
 fi
 
 
@@ -59,7 +59,8 @@ mkdir /usr/bin/HomeworkInspector
 cp -f tools/valgrind_zombie_hunter.py /usr/bin/HomeworkInspector/
 
 
-rm -rf /usr/bin/HomeworkInspector/$HW_NAME
+# /usr/bin/HomeworkInspector
+rm -rf /usr/bin/HomeworkInspector/{$HW_NAME,$H_HW_NAME}
 mkdir /usr/bin/HomeworkInspector/$HW_NAME
 
 cp -f HomeworkInspector/build_script_phase0 /usr/bin/HomeworkInspector/$HW_NAME
@@ -80,6 +81,8 @@ make all
 cd ../../
 cp -f HomeworkInspector/src/HomeworkInspector  /usr/bin/HomeworkInspector/$HW_NAME
 cp -f HomeworkInspector/src/test_target /usr/bin/HomeworkInspector/$HW_NAME
+
+
 
 mkdir /usr/bin/HomeworkInspector/$HW_NAME/skeleton_code
 cp -f HomeworkCodes/$HW_NAME/skeleton/{input.txt,output.txt.gold,verify.sh,verifier.py} /usr/bin/HomeworkInspector/$HW_NAME/skeleton_code/
@@ -104,24 +107,33 @@ chmod 755 /usr/bin/HomeworkInspector/$HW_NAME/CreateScoreboard.php
 #replace_tag /usr/bin/HomeworkInspector/$HW_NAME/CreateScoreboard_v2.php
 #chmod 755 /usr/bin/HomeworkInspector/$HW_NAME/CreateScoreboard_v2.php
 
-
-
 cp -f HomeworkScoreboard/*.ttf /usr/bin/HomeworkInspector/$HW_NAME/
 cp -f HomeworkScoreboard/TextToImage.php /usr/bin/HomeworkInspector/$HW_NAME/
 replace_tag /usr/bin/HomeworkInspector/$HW_NAME/TextToImage.php
 chmod 755 /usr/bin/HomeworkInspector/$HW_NAME/TextToImage.php
 
+cp -rs /usr/bin/HomeworkInspector/$HW_NAME /usr/bin/HomeworkInspector/$H_HW_NAME
+if [[ -f HomeworkCodes/$HW_NAME/skeleton/hidden_input.txt ]] && [[ -f HomeworkCodes/$HW_NAME/skeleton/hidden_output.txt.gold ]]; then
+	rm -f /usr/bin/HomeworkInspector/$H_HW_NAME/skeleton_code/{input.txt,output.txt.gold}
+	cp -f HomeworkCodes/$HW_NAME/skeleton/hidden_input.txt /usr/bin/HomeworkInspector/$H_HW_NAME/skeleton_code/input.txt
+	cp -f HomeworkCodes/$HW_NAME/skeleton/hidden_output.txt.gold /usr/bin/HomeworkInspector/$H_HW_NAME/skeleton_code/output.txt.gold
+	chmod 700 /usr/bin/HomeworkInspector/$H_HW_NAME/skeleton_code/{input.txt,output.txt.gold}
+fi
 
+
+# /var/www/html
 mkdir /var/www/html/$HW_NAME/
 cp -fR HomeworkInspector_php/*   /var/www/html/$HW_NAME/
 cp -fR HomeworkScoreboard/CreateScoreboard_release.html  /var/www/html/$HW_NAME/
 replace_tag /var/www/html/$HW_NAME/config.php
 replace_tag /var/www/html/$HW_NAME/upload.php
 
+
+# /var/homeworks
 mkdir /var/homeworks
-mkdir /var/homeworks/$HW_NAME
+mkdir /var/homeworks/{$HW_NAME,$H_HW_NAME}
 mkdir /var/homeworks/$HW_NAME/config
-mkdir /var/homeworks/$HW_NAME/queue
+mkdir /var/homeworks/{$HW_NAME,$H_HW_NAME}/queue
 rm -rf  /var/homeworks/$HW_NAME/customized_templates
 cp -fR customized_templates /var/homeworks/$HW_NAME/
 cp HomeworkCodes/$HW_NAME/skeleton/data.hpp /var/homeworks/$HW_NAME/customized_templates/cpp_shm/
@@ -130,21 +142,29 @@ cp -Rf HomeworkCodes/$HW_NAME/homework_inspector_config /var/homeworks/$HW_NAME/
 chmod -R 700 /var/homeworks 
 chown -R apache.apache /var/homeworks
 
-chmod -R 700 /var/homeworks/$HW_NAME 
-chown -R apache.apache /var/homeworks/$HW_NAME
+chmod -R 700 /var/homeworks/{$HW_NAME,$H_HW_NAME}
+chown -R apache.apache /var/homeworks/{$HW_NAME,$H_HW_NAME}
 
 
 chcon -t httpd_cache_t /var/homeworks
-chcon -R -t httpd_cache_t /var/homeworks/$HW_NAME
+chcon -R -t httpd_cache_t /var/homeworks/{$HW_NAME,$H_HW_NAME}
 
+ln -fs /var/homeworks/$HW_NAME/{config,customized_templates} /var/homeworks/$H_HW_NAME
+
+
+# /var/log
 touch /var/log/HomeworkInspector.log
 chcon -t var_log_t /var/log/HomeworkInspector.log
 
+
+# /home/homeworks_workplace
 mkdir /home/homeworks_workplace
 chown root.root /home/homeworks_workplace
 chcon -t tmp_t /home/homeworks_workplace
 ln -s   /home/homeworks_workplace    /
 
+
+# shared memory
 cp HomeworkInspector/src/shm_writer.cpp HomeworkCodes/$HW_NAME/skeleton
 cp HomeworkInspector/src/shm_makefile HomeworkCodes/$HW_NAME/skeleton/makefile
 cd HomeworkCodes/$HW_NAME/skeleton
@@ -154,4 +174,7 @@ make clean
 rm makefile
 cd ../../..
 
+
+# crontab
 sudo crontab -l | { cat; echo "*/5 * * * * /usr/bin/HomeworkInspector/$HW_NAME/CreateScoreboard.php"; } | crontab -
+

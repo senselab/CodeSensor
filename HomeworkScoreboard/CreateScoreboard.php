@@ -725,10 +725,24 @@ function calculate_diversity()
 			$score_board[$k]["priority"]>0 ) {
 //			$NUM_OF_EFFECTIVE_SUBMISSION++;
 			$lang = $score_board[$k]["lang"];
-			if ( array_key_exists($lang, $LANG_CNT) )
+			if ( array_key_exists($lang, $LANG_CNT) ) {
+				if ($lang == "cpp") {
+					$LANG_CNT["cpp_shm"]++;
+				} elseif ($lang == "cpp_shm") {
+					$LANG_CNT["cpp"]++;
+				}
+
 				$LANG_CNT[$lang]++;
-			else
+			}
+			else {
+				if ($lang == "cpp") {
+					$LANG_CNT["cpp_shm"] = 1;
+				} elseif ($lang == "cpp_shm") {
+					$LANG_CNT["cpp"] = 1;
+				}
+
 				$LANG_CNT[$lang]=1;
+			}
 		}
 	}
 
