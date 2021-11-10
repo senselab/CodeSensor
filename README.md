@@ -94,13 +94,14 @@
       │ verify.sh
 
   ```
- - modify homework_inspector_config to change the deadline, homework title and description
- - data.hpp has the struct and function for the input loaded into the shared memory
+ - modify homework_inspector_config to change the deadline, illegal headers, homework title and description
+ - data.hpp has the struct and function for the input loaded into the shared memory 
  - input.txt and output.txt.gold are the input and correct output for the homework
  - verifier.py checks the correctness of the answer
- - check out 2021_hw1_sort_text for some example
+ - check out 2021_hw1_sort_text for some example 
+ (need to change SHM_NAME, variables in struct tTestData, and the implementation of load_data function in data.hpp)
 2. Upload to website
- - change the link in CodeSensor/web_frontpage/index.html
+ - change the links in CodeSensor/web_frontpage/index.html
  - install homework
  ```sh
  # root directory
