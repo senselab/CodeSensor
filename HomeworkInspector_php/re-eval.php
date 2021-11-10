@@ -8,7 +8,19 @@
 set_time_limit(0);
 ignore_user_abort(true);
 
+session_start();
+
 include_once("config.php");
+include_once ("account.php");
+
+if (!CookieAuthenticate($id, $name)) {
+        exit(-1);
+} 
+
+if ($id != "baseline") {
+        exit(-1);
+}
+
 
 $h_root_dir = "/var/homeworks/h_".$HW_NAME."/";
 

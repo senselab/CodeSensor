@@ -5,7 +5,19 @@
 <BODY>
 <h2> </h2><br/>
 <?php
+session_start();
+
 include_once("config.php");
+include_once ("account.php");
+
+if (!CookieAuthenticate($id, $name)) {
+        exit(-1);
+} 
+
+if ($id != "baseline") {
+        exit(-1);
+}
+
 
 $h_root_dir = "/var/homeworks/h_".$HW_NAME."/";
 
