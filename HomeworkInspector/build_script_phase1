@@ -42,13 +42,17 @@ LANGTYPE=$(./get_setting_value.py language)
 
 MEMORY_SIZE_CAP=$(./get_setting_value.py memory_size_cap)
 
+
 TEST_TARGET="./test_target"
-
-#############
-
 $TEST_TARGET -p 2>&1
 mv output.txt output.txt.vanilla
 
+#############
+if [ "$LANGTYPE" == "python" ]; then
+	TEST_TARGET="./run.sh"
+else
+	TEST_TARGET="./a.out"
+fi
 
 #############
 

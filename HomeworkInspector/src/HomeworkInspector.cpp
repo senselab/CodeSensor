@@ -71,6 +71,7 @@ char build_script_phase1[512];
 #define ANALYSIS_RESULT "analysis_result"
 #define LOG_FILE "/var/log/HomeworkInspector.log"
 #define TIMEOUT_FILE "timeout.final"
+#define TEST_TARGET_OUTPUT "test_target.report.final"
 
 const char ID_PREFIX[] = "HOMEWORK_USER_";
 
@@ -500,6 +501,7 @@ void merge_check_pattern_files(const char* szDir)
 
 	for (nSrcNum=0; src_name[nSrcNum]; nSrcNum++);
 
+	bool have_report = false;
 	for (k=0; src_name[k]; k++) {
 		FILE	*fp;
 		char    filename[512];
@@ -513,6 +515,7 @@ void merge_check_pattern_files(const char* szDir)
 			continue;
 		}
 
+		have_report = true;
 		while(fgets(buf, sizeof(buf),fp)) {
 			char num[512];
 			int nCheckNum, nPassed, nCheck;
@@ -544,6 +547,9 @@ void merge_check_pattern_files(const char* szDir)
 		fclose(fp);
 	}
 
+	if (!have_report) {
+		goto quit;
+	}
 	///////////
 	{
 		FILE	*fp;
@@ -1132,6 +1138,18 @@ void analyze_valgrind_massif_out_report(const char* szSrcDir,  tResultCollection
 	pcre_free(re);
 }
 
+bool runtime_error_check(const char* reportfile)
+{
+	struct stat info;
+	stat(reportfile, &info);
+
+	char buf[2048];
+	if (info.st_size > 0) {
+		return true;
+	} else {
+		return false;
+	}
+}
 
 void analyze_report(const char* szSrcDir, const char* szWorkspace)
 {
@@ -1139,7 +1157,15 @@ void analyze_report(const char* szSrcDir, const char* szWorkspace)
 	tResultCollection results;
 	FILE *fpOut;
 
-	
+	sprintf(buf, "%s/%s", szSrcDir, TEST_TARGET_OUTPUT);
+	if (runtime_error_check(buf)) {
+		sprintf(buf, "%s/%s", szSrcDir, ANALYSIS_RESULT);
+		if (fpOut = fopen(buf, "wt")) {
+			fprintf(fpOut, "Compilation Error/Runtime Error\n");
+			fclose(fpOut);
+		}
+		goto finish;
+	}
 //	detect_language(szWorkspace, results);
 	//AddResult(results, "timeout", (long long int)bTimeout);
 		
@@ -1203,15 +1229,18 @@ void analyze_report(const char* szSrcDir, const char* szWorkspace)
 		{	///append run.sh.settings.report.final
 			sprintf(buf, "%s/%s", szSrcDir, "run.sh.settings.report.final");			
 			FILE *fp = fopen(buf, "rt");
-			while(fgets(buf, sizeof(buf),fp))
-				fprintf(fpOut, "%s", buf);
-			fclose(fp);
+			if (fp) {
+				while(fgets(buf, sizeof(buf),fp))
+					fprintf(fpOut, "%s", buf);
+				fclose(fp);
+			}
 		}
 
 
 		fclose(fpOut);
 	}
 
+finish:
 	///////////// archiving potentially lengthy reports
 	_7za_file(szSrcDir, "ltrace.report.final");
 	_7za_file(szSrcDir, "build_script.report.final");
@@ -1794,6 +1823,7 @@ void build(const char* job, bool bDisableOptimization) {
 	}
 	else{
 	
+finish_build:;
 		try {	
 			analyze_report(sz_src_dir.c_str(), sz_workspace.c_str());
 		}
@@ -1801,7 +1831,6 @@ void build(const char* job, bool bDisableOptimization) {
 			//goto cleanup;
 		}	
 		
-finish_build:;
 		sprintf(buf,  "cd %s; python3 %s/progress_log.py illegal_headers > /dev/null 2>&1", sz_src_dir.c_str(), sz_workspace.c_str());
 		system(buf);
 		sprintf( buf, "cd %s; python3 %s/progress_log.py analysis_result 1 > /dev/null 2>&1", sz_src_dir.c_str(), sz_workspace.c_str());
@@ -1990,6 +2019,8 @@ void FinalizeAnalysisResult()
 {
 	char buf[1024];
 	sprintf(buf, "mv -f %s/current/%s  %s/current/%s.final", homework_user_root_dir, ANALYSIS_RESULT, homework_user_root_dir, ANALYSIS_RESULT);
+	system(buf);
+	sprintf( buf, "cd %s; python3 %s/progress_log.py done > /dev/null 2>&1", sz_src_dir.c_str(), sz_workspace.c_str());
 	system(buf);
 }
 

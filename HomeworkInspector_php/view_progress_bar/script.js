@@ -265,16 +265,13 @@ request_handler = function () {
 					
 				}
 
-				norm_progress_value = Math.round(progress_value*100 / progress_value_max);
-			
-				progress.style.width = progress.innerHTML = norm_progress_value + '%';
 			
 				var milestones = request.responseXML.getElementsByTagName('MILESTONE');
-
+				var flag = true;
 
 				for (var i = 0; i < milestones.length; i++) {
 					var ms = milestones[i].firstChild.nodeValue;
-
+					if (ms == "done") flag = false;
 //					alert(ms + ' ' + load_state[ms]);
 					
 					if ( load_state[ms] < 2) {
@@ -286,6 +283,15 @@ request_handler = function () {
 							ShowDivByID(ms,true);
 					}
 				}
+
+				if (flag) {
+					norm_progress_value = Math.round(progress_value*100 / progress_value_max);
+					progress.style.width = progress.innerHTML = norm_progress_value + '%';
+				} else {
+					progress.style.width = '100%';
+					progress.innerHTML = 'analysis completed';
+				}
+
 			}
 		}
 		else { // if request status is not OK

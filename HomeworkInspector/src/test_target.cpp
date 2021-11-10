@@ -4,7 +4,7 @@
 #include <sys/resource.h>
 
 int main(int argc, char** argv) {
-    system("./run.sh > test_target.output.final 2>&1");
+    system("./run.sh 2> test_target.report.final");
 
 	if ( argc==2 && !strcmp(argv[1], "-p") ) {
 	    struct rusage ru;

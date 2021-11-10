@@ -82,7 +82,7 @@ cp -f HomeworkInspector/src/HomeworkInspector  /usr/bin/HomeworkInspector/$HW_NA
 cp -f HomeworkInspector/src/test_target /usr/bin/HomeworkInspector/$HW_NAME
 
 mkdir /usr/bin/HomeworkInspector/$HW_NAME/skeleton_code
-cp -f HomeworkCodes/$HW_NAME/skeleton/* /usr/bin/HomeworkInspector/$HW_NAME/skeleton_code/
+cp -f HomeworkCodes/$HW_NAME/skeleton/{input.txt,output.txt.gold,verify.sh,verifier.py} /usr/bin/HomeworkInspector/$HW_NAME/skeleton_code/
 dos2unix  /usr/bin/HomeworkInspector/$HW_NAME/skeleton_code/verify.sh
 dos2unix /usr/bin/HomeworkInspector/$HW_NAME/skeleton_code/verifier.py
 

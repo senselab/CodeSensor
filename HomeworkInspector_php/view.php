@@ -57,7 +57,9 @@ if ( !CookieAuthenticate($userid , $user_name)) {
 	exit(-1);	
 }
 
-$dir = $root_dir . $userid . "/current/";
+$dir = $root_dir . $userid . "/current";
+$dir = readlink($dir);
+
 //$user_name = $user;
 echo "<font size=4 color=green>Submission Info for ".$userid. " $user_name<br/><br/></font></h1>";
 
@@ -136,7 +138,7 @@ $filepath = $dir."sha1.report.final";
 
 if (file_exists($filepath) ) {
 	show_text_file($filepath);
-}
+} else { echo"<font size=3 color=red>Analysis takes longer than expected. Process aborted !!!"; }
 
 echo "<br/>";
 
