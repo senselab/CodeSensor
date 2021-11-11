@@ -23,6 +23,8 @@ if ($id != "baseline") {
 
 
 $h_root_dir = "/var/homeworks/h_".$HW_NAME."/";
+$progress_file = $h_root_dir."progress";
+file_put_contents($progress_file, "");
 
 foreach(glob($root_dir."*", GLOB_ONLYDIR) as $sub) {
 	$h_id =  basename($sub);
@@ -75,10 +77,12 @@ foreach(glob($root_dir."*", GLOB_ONLYDIR) as $sub) {
 		symlink($h_target_file, $h_queue_dir.$h_id);
 
 		proc_close(proc_open($homework_inspector_executable." ".$h_id." h_".$HW_NAME, Array(), $foo));
+		file_put_contents($progress_file, $h_id." done\n", FILE_APPEND);
 	}
 }
 
 echo "all done<br>";
+file_put_contents($progress_file, "all done\n");
 ?>
 </BODY>
 </HTML>

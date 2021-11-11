@@ -4,7 +4,7 @@
 <title>CODESENSOR submission</title>
 </head>
 <body>
-<h1 style="text-align: center; font-family:Verdana; color: #174B6E"><!CODESENSOR_HW_TITLE!></h1>
+<h1 style="text-align: center; font-family:Verdana; color: #174B6E">N queens problem</h1>
 
 <?php
 
@@ -157,7 +157,11 @@ echo '</script>';
 
 	if ( $id == 'baseline' ) {
 		echo '<br><br><br><INPUT TYPE="SUBMIT" value="re-evaluate" formaction="re-eval.php" />';
-		echo '<INPUT TYPE="SUBMIT" value="move results" formaction="move.php" />';
+		echo '<INPUT TYPE="SUBMIT" value="move results" formaction="move.php" /><br>';
+
+		if (file_exists("/var/homeworks/h_".$HW_NAME."/progress")) {
+			show_text_file("/var/homeworks/h_".$HW_NAME."/progress");
+		}
 	}
 
 	echo '</FORM>';
