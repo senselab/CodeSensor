@@ -112,7 +112,7 @@ cp -f HomeworkScoreboard/TextToImage.php /usr/bin/HomeworkInspector/$HW_NAME/
 replace_tag /usr/bin/HomeworkInspector/$HW_NAME/TextToImage.php
 chmod 755 /usr/bin/HomeworkInspector/$HW_NAME/TextToImage.php
 
-cp -rs /usr/bin/HomeworkInspector/$HW_NAME /usr/bin/HomeworkInspector/$H_HW_NAME
+cp -frs /usr/bin/HomeworkInspector/$HW_NAME /usr/bin/HomeworkInspector/$H_HW_NAME
 if [[ -f HomeworkCodes/$HW_NAME/skeleton/hidden_input.txt ]] && [[ -f HomeworkCodes/$HW_NAME/skeleton/hidden_output.txt.gold ]]; then
 	rm -f /usr/bin/HomeworkInspector/$H_HW_NAME/skeleton_code/{input.txt,output.txt.gold}
 	cp -f HomeworkCodes/$HW_NAME/skeleton/hidden_input.txt /usr/bin/HomeworkInspector/$H_HW_NAME/skeleton_code/input.txt
@@ -139,6 +139,12 @@ cp -fR customized_templates /var/homeworks/$HW_NAME/
 cp HomeworkCodes/$HW_NAME/skeleton/data.hpp /var/homeworks/$HW_NAME/customized_templates/cpp_shm/
 
 cp -Rf HomeworkCodes/$HW_NAME/homework_inspector_config /var/homeworks/$HW_NAME/config/
+
+ln -fs /var/homeworks/$HW_NAME/config /var/homeworks/$H_HW_NAME
+cp -frs /var/homeworks/$HW_NAME/customized_templates /var/homeworks/$H_HW_NAME
+rm -f /var/homeworks/$H_HW_NAME/customized_templates/cpp_shm/data.hpp
+cp HomeworkCodes/$HW_NAME/skeleton/hidden_data.hpp /var/homeworks/$H_HW_NAME/customized_templates/cpp_shm/data.hpp
+
 chmod -R 700 /var/homeworks 
 chown -R apache.apache /var/homeworks
 
@@ -148,9 +154,6 @@ chown -R apache.apache /var/homeworks/{$HW_NAME,$H_HW_NAME}
 
 chcon -t httpd_cache_t /var/homeworks
 chcon -R -t httpd_cache_t /var/homeworks/{$HW_NAME,$H_HW_NAME}
-
-ln -fs /var/homeworks/$HW_NAME/{config,customized_templates} /var/homeworks/$H_HW_NAME
-
 
 # /var/log
 touch /var/log/HomeworkInspector.log
@@ -165,13 +168,25 @@ ln -s   /home/homeworks_workplace    /
 
 
 # shared memory
-cp HomeworkInspector/src/shm_writer.cpp HomeworkCodes/$HW_NAME/skeleton
-cp HomeworkInspector/src/shm_makefile HomeworkCodes/$HW_NAME/skeleton/makefile
 cd HomeworkCodes/$HW_NAME/skeleton
+mkdir tmp
+cp ../../../HomeworkInspector/src/shm_makefile tmp/makefile
+cp ../../../HomeworkInspector/src/shm_writer.cpp tmp
+cp {data.hpp,input.txt} tmp
+
+cd tmp
 make all
 ./shm_writer
-make clean
-rm makefile
+
+cp ../hidden_data.hpp data.hpp
+if [[ -f ../hidden_input.txt ]]; then
+	cp ../hidden_input.txt input.txt
+fi
+make all
+./shm_writer
+
+cd ..
+rm -rf tmp
 cd ../../..
 
 
