@@ -15,19 +15,26 @@ fi
 
 H_HW_NAME="h_$HW_NAME"
 
+rm -rf /usr/bin/HomeworkInspector/{$HW_NAME,$H_HW_NAME}
+rm -rf /var/www/html/$HW_NAME
+rm -rf /var/homeworks/{$HW_NAME,$H_HW_NAME}
 
 cd HomeworkCodes/$HW_NAME/skeleton
 mkdir tmp
 cp ../../../HomeworkInspector/src/shm_makefile tmp/makefile
 cp ../../../HomeworkInspector/src/shm_writer.cpp tmp
-cp {data.hpp,hidden_data.hpp,input.txt,hidden_input.txt} tmp
+cp {data.hpp,input.txt} tmp
 
 cd tmp
 make all > /dev/null
 ./shm_writer clean
 
-mv hidden_data.hpp data.hpp
-./shm_writer clean
+if [[ -f ../hidden_input.txt ]] && [[ -f ../hidden_data.hpp ]]; then
+	cp ../hidden_data.hpp data.hpp
+	cp ../hidden_input.txt input.txt
+	make all > /dev/null
+	./shm_writer clean
+fi
 
 cd ..
 rm -rf tmp

@@ -54,14 +54,14 @@ function replace_tag() {
 cp $VALGRIND_PATH/valgrind $VALGRIND_PATH/valgrind.safe
 chcon -t homework_exec_t $VALGRIND_PATH/valgrind.safe
 
-mkdir /usr/bin/HomeworkInspector
+mkdir /usr/bin/HomeworkInspector > /dev/null 2>&1
 
 cp -f tools/valgrind_zombie_hunter.py /usr/bin/HomeworkInspector/
 
 
 # /usr/bin/HomeworkInspector
 rm -rf /usr/bin/HomeworkInspector/{$HW_NAME,$H_HW_NAME}
-mkdir /usr/bin/HomeworkInspector/$HW_NAME
+mkdir /usr/bin/HomeworkInspector/$HW_NAME > /dev/null 2>&1
 
 cp -f HomeworkInspector/build_script_phase0 /usr/bin/HomeworkInspector/$HW_NAME
 cp -f HomeworkInspector/build_script_phase1 /usr/bin/HomeworkInspector/$HW_NAME
@@ -86,8 +86,8 @@ cp -f HomeworkInspector/src/test_target /usr/bin/HomeworkInspector/$HW_NAME
 
 mkdir /usr/bin/HomeworkInspector/$HW_NAME/skeleton_code
 cp -f HomeworkCodes/$HW_NAME/skeleton/{input.txt,output.txt.gold,verify.sh,verifier.py} /usr/bin/HomeworkInspector/$HW_NAME/skeleton_code/
-dos2unix  /usr/bin/HomeworkInspector/$HW_NAME/skeleton_code/verify.sh
-dos2unix /usr/bin/HomeworkInspector/$HW_NAME/skeleton_code/verifier.py
+dos2unix -q /usr/bin/HomeworkInspector/$HW_NAME/skeleton_code/verify.sh
+dos2unix -q /usr/bin/HomeworkInspector/$HW_NAME/skeleton_code/verifier.py
 
 
 
@@ -114,15 +114,18 @@ chmod 755 /usr/bin/HomeworkInspector/$HW_NAME/TextToImage.php
 
 cp -frs /usr/bin/HomeworkInspector/$HW_NAME /usr/bin/HomeworkInspector/$H_HW_NAME
 if [[ -f HomeworkCodes/$HW_NAME/skeleton/hidden_input.txt ]] && [[ -f HomeworkCodes/$HW_NAME/skeleton/hidden_output.txt.gold ]]; then
+	echo "hidden_input.txt & hidden_output.txt.gold found"
 	rm -f /usr/bin/HomeworkInspector/$H_HW_NAME/skeleton_code/{input.txt,output.txt.gold}
 	cp -f HomeworkCodes/$HW_NAME/skeleton/hidden_input.txt /usr/bin/HomeworkInspector/$H_HW_NAME/skeleton_code/input.txt
 	cp -f HomeworkCodes/$HW_NAME/skeleton/hidden_output.txt.gold /usr/bin/HomeworkInspector/$H_HW_NAME/skeleton_code/output.txt.gold
 	chmod 700 /usr/bin/HomeworkInspector/$H_HW_NAME/skeleton_code/{input.txt,output.txt.gold}
+else
+	echo "no hidden_input & output found, using input.txt & output.txt.gold"
 fi
 
 
 # /var/www/html
-mkdir /var/www/html/$HW_NAME/
+mkdir /var/www/html/$HW_NAME/ > /dev/null 2>&1
 cp -fR HomeworkInspector_php/*   /var/www/html/$HW_NAME/
 cp -fR HomeworkScoreboard/CreateScoreboard_release.html  /var/www/html/$HW_NAME/
 replace_tag /var/www/html/$HW_NAME/config.php
@@ -130,10 +133,10 @@ replace_tag /var/www/html/$HW_NAME/upload.php
 
 
 # /var/homeworks
-mkdir /var/homeworks
-mkdir /var/homeworks/{$HW_NAME,$H_HW_NAME}
-mkdir /var/homeworks/$HW_NAME/config
-mkdir /var/homeworks/{$HW_NAME,$H_HW_NAME}/queue
+mkdir /var/homeworks > /dev/null 2>&1
+mkdir /var/homeworks/{$HW_NAME,$H_HW_NAME} > /dev/null 2>&1
+mkdir /var/homeworks/$HW_NAME/config  > /dev/null 2>&1
+mkdir /var/homeworks/{$HW_NAME,$H_HW_NAME}/queue  > /dev/null 2>&1
 rm -rf  /var/homeworks/$HW_NAME/customized_templates
 cp -fR customized_templates /var/homeworks/$HW_NAME/
 cp HomeworkCodes/$HW_NAME/skeleton/data.hpp /var/homeworks/$HW_NAME/customized_templates/cpp_shm/
@@ -141,11 +144,17 @@ cp HomeworkCodes/$HW_NAME/skeleton/data.hpp /var/homeworks/$HW_NAME/customized_t
 cp -Rf HomeworkCodes/$HW_NAME/homework_inspector_config /var/homeworks/$HW_NAME/config/
 
 ln -fs /var/homeworks/$HW_NAME/config /var/homeworks/$H_HW_NAME
+rm -rf /var/homeworks/$H_HW_NAME/customized_templates
 cp -frs /var/homeworks/$HW_NAME/customized_templates /var/homeworks/$H_HW_NAME
-rm -f /var/homeworks/$H_HW_NAME/customized_templates/cpp_shm/data.hpp
-cp HomeworkCodes/$HW_NAME/skeleton/hidden_data.hpp /var/homeworks/$H_HW_NAME/customized_templates/cpp_shm/data.hpp
+if [[ -f HomeworkCodes/$HW_NAME/skeleton/hidden_data.hpp ]]; then
+	echo "hidden_data.hpp found"
+	rm -f /var/homeworks/$H_HW_NAME/customized_templates/cpp_shm/data.hpp
+	cp HomeworkCodes/$HW_NAME/skeleton/hidden_data.hpp /var/homeworks/$H_HW_NAME/customized_templates/cpp_shm/data.hpp
+else
+	echo "no hidden_data.hpp found, using data.hpp"
+fi
 
-chmod -R 700 /var/homeworks 
+chmod -R 700 /var/homeworks
 chown -R apache.apache /var/homeworks
 
 chmod -R 700 /var/homeworks/{$HW_NAME,$H_HW_NAME}
@@ -161,10 +170,10 @@ chcon -t var_log_t /var/log/HomeworkInspector.log
 
 
 # /home/homeworks_workplace
-mkdir /home/homeworks_workplace
+mkdir /home/homeworks_workplace > /dev/null 2>&1
 chown root.root /home/homeworks_workplace
 chcon -t tmp_t /home/homeworks_workplace
-ln -s   /home/homeworks_workplace    /
+ln -s /home/homeworks_workplace    / > /dev/null 2>&1
 
 
 # shared memory
@@ -178,12 +187,12 @@ cd tmp
 make all
 ./shm_writer
 
-cp ../hidden_data.hpp data.hpp
-if [[ -f ../hidden_input.txt ]]; then
+if [[ -f ../hidden_input.txt ]] && [[ -f ../hidden_data.hpp ]]; then
+	cp ../hidden_data.hpp data.hpp
 	cp ../hidden_input.txt input.txt
+	make all
+	./shm_writer
 fi
-make all
-./shm_writer
 
 cd ..
 rm -rf tmp
