@@ -4,7 +4,7 @@
 <title>CODESENSOR submission</title>
 </head>
 <body>
-<h1 style="text-align: center; font-family:Verdana; color: #174B6E">N queens problem</h1>
+<h1 style="text-align: center; font-family:Verdana; color: #174B6E"><!CODESENSOR_HW_TITLE!></h1>
 
 <?php
 
