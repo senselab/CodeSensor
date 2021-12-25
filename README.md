@@ -92,20 +92,30 @@
       │ output.txt.gold
       │ verifier.py
       │ verify.sh
+      │ hidden_data.hpp (optional)
+      │ hidden_input.txt (optional)
+      │ hidden_output.txt.gold (optional)
 
   ```
  - modify homework_inspector_config to change the deadline, illegal headers, homework title and description
- - data.hpp has the struct and function for the input loaded into the shared memory 
  - input.txt and output.txt.gold are the input and correct output for the homework
  - verifier.py checks the correctness of the answer
- - check out 2021_hw1_sort_text for some example 
- (need to change SHM_NAME, variables in struct tTestData, and the implementation of load_data function in data.hpp)
+ - data.hpp has struct for storing the input data, load_data(...) function to read in the input data and store it in the struct, and SHM_NAME to distinguish the names of shared memory in the OS
+ - hidden_data.hpp, hidden_input.txt and hidden_output.txt.gold are for code re-evaluation, they have the same purposes as the non-hidden ones, but have different test data
+ - be sure to change hidden_data.hpp's SHM_NAME if it's copied from data.hpp
+ - check out 2021_hw0_copy_paste or 2021_hw1_sort_text for some examples
+ 
 2. Upload to website
- - change the links in CodeSensor/web_frontpage/index.html
  - install homework
  ```sh
  # root directory
  sudo ./install <HW_NAME>
+ ```
+
+ - change the links in CodeSensor/web_frontpage/index.html
+ - install webpage
+ ```sh
+ # root directory
  sudo ./install_webpage
  ```
  - make the submitted code public
@@ -117,3 +127,8 @@
  # root directory
  sudo ./uninstall <HW_NAME>
  ```
+# Re-evaluate uploaded codes
+- log in to the website using baseline account
+- click "re-evaluation link" in Submit tab
+- click "Re-eval All" button to re-evaluate all the codes using hidden test data, or click "Re-eval \<ID\>" button for individual user
+- "move results" button to replace all the old results with the newly generated results
